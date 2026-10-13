@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ccpkaf8ny8f0"
-path="res://.godot/imported/Appearing (96x96).png-bdbe2979a291aad5766f6170165e5c19.ctex"
+uid="uid://bn1kqubuyggs"
+path="res://.godot/imported/93.png-88872cb080fb28d104fe12bb80c2087a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Main Characters/Appearing (96x96).png"
-dest_files=["res://.godot/imported/Appearing (96x96).png-bdbe2979a291aad5766f6170165e5c19.ctex"]
+source_file="res://assets/Gate/93.png"
+dest_files=["res://.godot/imported/93.png-88872cb080fb28d104fe12bb80c2087a.ctex"]
 
 [params]
 

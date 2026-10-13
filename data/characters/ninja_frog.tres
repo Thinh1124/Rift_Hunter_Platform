@@ -8,8 +8,10 @@
 atlas = ExtResource("3_tex")
 region = Rect2(0, 0, 32, 32)
 
+
 [resource]
 script = ExtResource("1_script")
+unlock_level = 4
 id = &"ninja_frog"
 display_name = "Ninja Frog"
 icon = SubResource("AtlasTexture_icon")
@@ -20,5 +22,6 @@ speed_mult = 1.1
 jump_mult = 1.2
 max_hp_bonus = -1
 attack_cooldown_mult = 0.7
-ability = "Lightning fast, fragile body"
-unlocked_by_default = true
+ability_id = &"double_jump"
+ability = "Nhay 2 lan tren khong"
+unlocked_by_default = false

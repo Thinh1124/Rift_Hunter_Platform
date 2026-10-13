@@ -10,6 +10,12 @@ const TOUCH_SCALE_MIN: float = 0.8
 const TOUCH_SCALE_MAX: float = 1.3
 
 var unlocked_level: int = 1
+## Màn CAO NHẤT đã vượt qua (0 = chưa vượt màn nào).
+## `unlocked_level` là màn lớn nhất được mở khoá, tức luôn = levels_completed + 1
+## sau khi chơi từ đầu; nhưng nó cộng dồn theo cách khác nếu người chơi từng đổi
+## save. Giữ 2 biến tách bạch: cái này trả lời "đã VƯỢT màn N chưa" — dùng cho
+## mở khoá nhân vật.
+var levels_completed: int = 0
 var best_score: int = 0
 var stars: Dictionary[String, int] = {}
 var selected_character_id: String = ""
@@ -32,6 +38,7 @@ func _ready() -> void:
 func default_data() -> Dictionary:
 	return {
 		"unlocked_level": 1,
+		"levels_completed": 0,
 		"best_score": 0,
 		"stars": {},
 		"selected_character_id": "",
@@ -83,6 +90,7 @@ func to_dictionary() -> Dictionary:
 		stars_out[key] = stars[key]
 	return {
 		"unlocked_level": unlocked_level,
+		"levels_completed": levels_completed,
 		"best_score": best_score,
 		"stars": stars_out,
 		"selected_character_id": selected_character_id,
@@ -97,6 +105,11 @@ func to_dictionary() -> Dictionary:
 
 func _from_dictionary(source: Dictionary) -> void:
 	unlocked_level = maxi(int(source.get("unlocked_level", 1)), 1)
+	# Save cũ chưa có "levels_completed": suy ra từ unlocked_level (màn lớn nhất
+	# được mở = màn vừa vượt + 1). Không suy ra thì người đã vượt màn 2 sẽ mất
+	# nhân vật ngay khi cơ chế mở khoá được thêm vào.
+	levels_completed = maxi(int(source.get("levels_completed", unlocked_level - 1)), 0)
+	unlocked_level = maxi(unlocked_level, levels_completed + 1)
 	best_score = maxi(int(source.get("best_score", 0)), 0)
 	selected_character_id = String(source.get("selected_character_id", ""))
 	music_vol = clampf(float(source.get("music_vol", 0.8)), 0.0, 1.0)
@@ -122,6 +135,18 @@ func unlock(level: int) -> void:
 func set_stars(level: int, n: int) -> void:
 	stars[str(level)] = clampi(n, 0, MAX_STARS)
 	save()
+
+
+## Ghi nhận đã vượt qua màn `level` (dùng cho mở khoá nhân vật).
+## Không gọi save() — _on_level_completed gọi unlock() ngay sau đó.
+func mark_level_completed(level: int) -> void:
+	if level > levels_completed:
+		levels_completed = clampi(level, 0, 99)
+
+
+## Đã vượt qua màn `level` chưa.
+func is_level_completed(level: int) -> bool:
+	return levels_completed >= level
 
 
 func get_stars(level: int) -> int:

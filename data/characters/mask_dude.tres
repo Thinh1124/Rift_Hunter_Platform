@@ -8,8 +8,10 @@
 atlas = ExtResource("3_tex")
 region = Rect2(0, 0, 32, 32)
 
+
 [resource]
 script = ExtResource("1_script")
+unlock_level = 3
 id = &"mask_dude"
 display_name = "Mask Dude"
 icon = SubResource("AtlasTexture_icon")
@@ -20,4 +22,6 @@ speed_mult = 1.15
 jump_mult = 1.05
 max_hp_bonus = 1
 attack_cooldown_mult = 0.8
-ability = "Chance to crit 25%"
+ability_id = &""
+ability = "Dap nhanh, chay 1.15x"
+unlocked_by_default = false

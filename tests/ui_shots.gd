@@ -13,6 +13,8 @@ const WARMUP_FRAMES: int = 8
 
 var _shot_index: int = 0
 var _errors: PackedStringArray = PackedStringArray()
+## Ban sao save thật, khoi phuc lai khi chup xong.
+var _saved: Dictionary = {}
 
 
 func _ready() -> void:
@@ -20,6 +22,7 @@ func _ready() -> void:
 	print("=== UI SHOTS: ", ProjectSettings.globalize_path(OUT_DIR), " ===")
 	Engine.time_scale = 1.0
 	get_window().min_size = Vector2i(640, 360)
+	_save_restore()
 
 	# Nen chu de toi truoc moi man hinh.
 	var bg := ColorRect.new()
@@ -81,7 +84,39 @@ func _ready() -> void:
 	else:
 		for e in _errors:
 			print("LOI: ", e)
+	_restore_save()
 	get_tree().quit()
+
+
+## Chụp ảnh phải dùng save GIẢ (LevelSelect cần màn đã mở + sao để kiểm tra quy
+## tắc khoá), nhưng SaveManager là autoload ghi thẳng xuống save.json.
+## Không chặn thì chạy ui_shots một lần là hỏng luôn tiến trình người chơi:
+## đây chính là lý do sau khi reset mà save vẫn còn unlocked_level = 3.
+func _save_restore() -> void:
+	_saved = {
+		"unlocked_level": SaveManager.unlocked_level,
+		"levels_completed": SaveManager.levels_completed,
+		"stars": SaveManager.stars.duplicate(true),
+		"best_score": SaveManager.best_score,
+		"selected_character_id": SaveManager.selected_character_id,
+		"tutorial_completed": SaveManager.tutorial_completed,
+	}
+	print("save: giu lai unlocked=%d completed=%d stars=%s" % [
+		SaveManager.unlocked_level, SaveManager.levels_completed, SaveManager.stars])
+
+
+func _restore_save() -> void:
+	if _saved.is_empty():
+		return
+	SaveManager.unlocked_level = int(_saved["unlocked_level"])
+	SaveManager.levels_completed = int(_saved["levels_completed"])
+	SaveManager.stars = (_saved["stars"] as Dictionary).duplicate(true)
+	SaveManager.best_score = int(_saved["best_score"])
+	SaveManager.selected_character_id = String(_saved["selected_character_id"])
+	SaveManager.tutorial_completed = bool(_saved["tutorial_completed"])
+	SaveManager.save()
+	print("save: da khoi phuc unlocked=%d completed=%d stars=%s" % [
+		SaveManager.unlocked_level, SaveManager.levels_completed, SaveManager.stars])
 
 
 ## Dung 1 scene, cho layout on dinh, chup lai.

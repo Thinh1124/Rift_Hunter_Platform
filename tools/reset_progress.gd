@@ -57,7 +57,12 @@ func _ready() -> void:
 	_log("SAU KHI XOA, MO LAI GAME se:")
 	_log("  - chay lai anh huong dan Level0")
 	_log("  - chi man 1 duoc mo")
-	_log("  - tat ca 4 nhan vat chon duoc tu dau")
+	# In ra tu data/characters/ thay vi ghi cung: them nhan vat moi se khong
+	# phai sua dong nay, va dong cu da sai mot lan sau khi them co che mo khoa.
+	for data: CharacterData in GameManager.all_characters():
+		var need: int = data.required_level()
+		_log("  - nhan vat %s: %s" % [data.display_name,
+			"chon duoc tu dau" if need <= 0 else "mo khoa sau khi vuot man %d" % need])
 	_finish()
 
 

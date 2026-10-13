@@ -47,8 +47,12 @@ func refresh() -> void:
 	_grid.columns = maxi(columns, 1)
 	for level in range(1, GameManager.LEVEL_COUNT + 1):
 		var unlocked: bool = level <= SaveManager.unlocked_level
+		var stars: int = SaveManager.get_stars(level)
 		var slot := slot_scene.instantiate() as LevelSlot
-		slot.setup(level, unlocked, level == GameManager.BOSS_LEVEL, SaveManager.get_stars(level))
+		# `played` = đã từng vượt qua. Màn chưa chơi hiện 3 sao rỗng trông như
+		# "đã thua 0/3" — ẩn hẳn cho tới khi có kết quả.
+		var played: bool = SaveManager.is_level_completed(level)
+		slot.setup(level, unlocked, level == GameManager.BOSS_LEVEL, stars, played)
 		# Ô khoá: KHÔNG nối pressed -> không đường nào bấm vào được
 		# (LevelSlot._apply() cũng đặt disabled = true).
 		if unlocked:

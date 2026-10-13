@@ -27,6 +27,8 @@ GROUPS: player, enemy, gate, checkpoint, boss, npc
 
 AUTOLOAD (tên singleton): EventBus, GameManager, SaveManager, AudioManager
 NHÂN VẬT ĐỔI ĐƯỢC: Player KHÔNG gắn cứng sprite/chỉ số. Mọi nhân vật là 1 file CharacterData (.tres) trong res://data/characters/. GameManager.selected_character:CharacterData quyết định Player dùng model nào.
+NHÂN VẬT (chi tiết): xem 08_CHARACTERS.md — ability_id (năng kỹ đặt, ví dụ double_jump) + unlock_level (mở khoá theo màn đã vượt).
+LƯU Ý .tres: dòng `script = ExtResource(...)` PHẢI đứng đầu khối [resource], mọi thuộc tính khác đặt sau — đặt trước sẽ bị bỏ qua âm thầm.
 
 COMPONENT CÓ SẴN (res://components/):
 - HealthComponent (Node): @export max_health:int; var current:int

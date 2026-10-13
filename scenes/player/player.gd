@@ -44,6 +44,10 @@ const BASE_BUFFER: float = 0.1
 @export var jump_buffer: float = 0.1
 ## Nhân velocity.y khi thả jump giữa chừng (nhảy thấp).
 @export_range(0.0, 1.0, 0.05) var jump_cut: float = 0.5
+## Lực nhảy lần 2 trên không, nhân thêm jump_mult của nhân vật.
+## 0.88 = cú nhảy thứ 2 hơi yếu hơn cú đầu, đúng như cảm giác double jump.
+## Chỉ dùng khi CharacterData.ability_id == &"double_jump".
+@export_range(0.3, 1.5, 0.05) var air_jump_mult: float = 0.88
 @export_range(1, 99, 1) var max_hp: int = 3
 
 @export_group("Projectile")
@@ -138,6 +142,12 @@ var _attack_cooldown: float = 0.4
 var _was_on_floor: bool = false
 var _jumped: bool = false
 var _jump_prev: bool = false
+## Nhân vật có năng kỹ đặc nhảy 2 lần trên không (ability_id).
+var _can_double_jump: bool = false
+## Đã dùng cú nhảy trên không lần này chưa. Reset khi chạm đất.
+var _air_jump_used: bool = false
+## Cú nhảy vừa thực hiện có phải trên không không — Jump state dùng để chọn anim.
+var last_jump_was_air: bool = false
 
 
 func _ready() -> void:
@@ -228,6 +238,8 @@ func apply_character(data: CharacterData) -> void:
 	character = data
 	_speed = speed * data.speed_mult
 	_jump_velocity = jump_velocity * data.jump_mult
+	_can_double_jump = data.ability_id == &"double_jump"
+	_air_jump_used = false
 	_max_hp = maxi(max_hp + data.max_hp_bonus, 1)
 	_attack_cooldown = attack_cooldown * data.attack_cooldown_mult
 	if data.projectile_scene != null:
@@ -582,7 +594,12 @@ func _find_health(node: Node) -> HealthComponent:
 # --- Nhảy -----------------------------------------------------------------
 
 func can_jump() -> bool:
-	return is_on_floor() or not coyote_timer.is_stopped()
+	return is_on_floor() or not coyote_timer.is_stopped() or can_air_jump()
+
+
+## Cú nhảy thứ 2 trên không còn dùng được không.
+func can_air_jump() -> bool:
+	return _can_double_jump and not _air_jump_used and not is_on_floor()
 
 
 func has_jump_request() -> bool:
@@ -592,12 +609,36 @@ func has_jump_request() -> bool:
 func do_jump() -> bool:
 	if not can_jump() or not has_jump_request():
 		return false
+	# Phải đọc cửa sổ coyote TRƯỚC khi dừng timer. Dừng rồi mới kiểm tra thì
+	# `coyote_timer.is_stopped()` luôn true -> mọi cú nhảy (kể cả cú từ mặt đất)
+	# đều rơi vào nhánh nhảy trên không và nhảy yếu hơn 12%.
+	var from_ground: bool = is_on_floor() or not coyote_timer.is_stopped()
 	jump_buffer_timer.stop()
 	coyote_timer.stop()
 	_jumped = true
-	velocity.y = _jump_velocity
+	if from_ground:
+		_air_jump_used = false
+		last_jump_was_air = false
+		velocity.y = _jump_velocity
+	else:
+		_air_jump_used = true
+		last_jump_was_air = true
+		velocity.y = _jump_velocity * air_jump_mult
 	state_machine.change_state(STATE_JUMP)
+	# Nhảy lần 2 xảy ra khi đã ở sẵn state Jump -> change_state() là no-op nên
+	# enter() không chạy, animation sẽ không đổi. Phát tay ở đây.
+	if state_machine.is_current(STATE_JUMP):
+		apply_jump_animation()
 	return true
+
+
+## Clip của cú nhảy vừa thực hiện: trên không -> "double_jump" (nếu có),
+## nền tảng -> "jump". Gọi từ cả Player.do_jump() lẫn JumpState.enter().
+func apply_jump_animation() -> void:
+	if last_jump_was_air:
+		play_animation_or(&"double_jump", &"jump")
+	else:
+		play_animation(&"jump")
 
 
 ## Thả jump giữa lúc bay lên -> cắt ngắn cú nhảy.
@@ -607,6 +648,7 @@ func _apply_jump_cut() -> void:
 
 
 func notify_landed() -> void:
+	_air_jump_used = false
 	DustFX.spawn(get_parent(), global_position)
 	landed.emit()
 
@@ -621,6 +663,15 @@ func play_animation(anim: StringName) -> void:
 	if sprite.animation == anim and sprite.is_playing():
 		return
 	sprite.play(anim)
+
+
+## Phát `anim`; nếu SpriteFrames không có thì phát `fallback`.
+## Dùng cho anim chỉ tồn tại ở một số nhân vật (vd double_jump chỉ có ở Ninja Frog).
+func play_animation_or(anim: StringName, fallback: StringName) -> void:
+	if sprite != null and sprite.sprite_frames != null and sprite.sprite_frames.has_animation(anim):
+		play_animation(anim)
+	else:
+		play_animation(fallback)
 
 
 ## Vừa gán sprite_frames, AnimatedSprite2D tự chọn animation ĐẦU TIÊN trong danh

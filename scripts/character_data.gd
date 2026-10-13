@@ -36,12 +36,25 @@ const FALLBACK_ANIMATION: StringName = &"idle"
 @export_range(0.25, 4.0, 0.05) var attack_cooldown_mult: float = 1.0
 ## Dòng mô tả năng kỹ đặc, hiện ở CharacterSelect. Rỗng -> ẩn luôn dòng này.
 @export_multiline var ability: String = ""
+## Mã năng kỹ đặc cho Player đọc bằng máy (không parse chuỗi `ability`).
+## Hiện có: &"" (không có) | &"double_jump" (nhảy 2 lần trên không).
+@export var ability_id: StringName = &""
 
-@export_group("Loadout")
+@export_group("Unlock")
 ## null = dùng Projectile mặc định gán trong Player.tscn.
 @export var projectile_scene: PackedScene
-## false = ẩn khỏi CharacterSelect (không phải mua bằng tiền trong game).
+## true = mở khoá ngay từ đầu (nhân vật mặc định).
 @export var unlocked_by_default: bool = true
+## Mở khoá sau khi vượt qua màn số N. 0 = không cần vượt màn nào.
+## `unlocked_by_default = true` thì `unlock_level` bị bỏ qua.
+@export_range(0, 99, 1) var unlock_level: int = 0
+
+
+## Màn phải vượt qua để mở khoá nhân vật này. 0 = đã mở sẵn.
+func required_level() -> int:
+	if unlocked_by_default:
+		return 0
+	return maxi(unlock_level, 1)
 
 
 func has_animation(anim: StringName) -> bool:

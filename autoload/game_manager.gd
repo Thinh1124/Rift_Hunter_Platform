@@ -114,6 +114,24 @@ func select_character(data: CharacterData) -> void:
 	SaveManager.save()
 
 
+## Nhân vật này đã mở khoá chưa.
+## Mở sẵn -> true. Ngược lại phải vượt qua đúng màn `required_level()`.
+func is_character_unlocked(data: CharacterData) -> bool:
+	if data == null:
+		return false
+	var need: int = data.required_level()
+	if need <= 0:
+		return true
+	return SaveManager.is_level_completed(need)
+
+
+## Dòng chữ hiện trên đầu nhân vật khi chưa mở khoá. Rỗng nếu đã mở.
+func character_lock_label(data: CharacterData) -> String:
+	if is_character_unlocked(data):
+		return ""
+	return "UNLOCK LEVEL %d" % data.required_level()
+
+
 # --- BẢNG THƯỞNG / PHẠT ---------------------------------------------------
 
 ## Pickup gọi hàm này khi người chơi chạm vào.
@@ -226,6 +244,8 @@ func _on_level_completed() -> void:
 	# Xong ải hướng dẫn -> từ lần sau vào game bỏ qua Level0.
 	if current_level == TUTORIAL_LEVEL:
 		SaveManager.mark_tutorial_completed()
+	# Đã VƯỢT màn này -> mở khoá nhân vật tương ứng.
+	SaveManager.mark_level_completed(current_level)
 	# Mở ải KẾ TIẾP (không phải ải vừa chơi - xem ghi chú go_to_level).
 	SaveManager.unlock(current_level + 1)
 
