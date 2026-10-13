@@ -94,7 +94,7 @@ var _base_modulate: Color = Color.WHITE
 func _ready() -> void:
 	add_to_group(GROUP)
 	direction = 1 if face_right else -1
-	sprite = sprite if sprite != null else find_child(^"Sprite", true, false) as AnimatedSprite2D
+	sprite = sprite if sprite != null else _find_sprite()
 	health = health if health != null else find_child(^"HealthComponent", true, false) as HealthComponent
 	hurtbox = hurtbox if hurtbox != null else find_child(^"Hurtbox", true, false) as HurtboxComponent
 	contact_hitbox = contact_hitbox if contact_hitbox != null else find_child(^"ContactHitbox", true, false) as HitboxComponent
@@ -121,6 +121,27 @@ func _ready() -> void:
 		_base_modulate = sprite.modulate
 		sprite.flip_h = direction < 0
 	_bind_states()
+	# StateMachine la con nen _ready() chay TRUOC Enemy._ready(): luc do `sprite`
+	# con null, play_anim() cua state khoi tao khong co hieu luc. Enemy se dung
+	# yen mot animation (thuong la idle) suot cho phan di chuyen. Phai ap lai
+	# animation cua state dang chay sau khi da lay duoc sprite.
+	if state_machine != null and state_machine.current_state != null:
+		enter_state(state_machine.current_state.name)
+
+
+## Tim AnimatedSprite2D du chua gan `sprite` trong Inspector.
+## Khong nen dua theo ten: node trong Enemy.tscn ten "AnimatedSprite2D", nen
+## find_child("Sprite") — cach cu — luon tra null. Scene moi tao ma quen gan
+## `sprite` se hien anh nhung khong flip_h, khong modulate, khong phat animation.
+func _find_sprite() -> AnimatedSprite2D:
+	if sprite != null:
+		return sprite
+	var direct := find_child(^"AnimatedSprite2D", true, false) as AnimatedSprite2D
+	if direct != null:
+		return direct
+	for child in find_children("*" as String, ^"AnimatedSprite2D", true, false):
+		return child as AnimatedSprite2D
+	return null
 
 
 func _bind_states() -> void:
@@ -262,6 +283,10 @@ func enter_state(state_name: StringName) -> void:
 		STATE_ATTACK:
 			_attack_left = attack_delay
 			play_anim(&"idle")
+		STATE_HURT:
+			play_anim(&"hit")
+		STATE_DEAD:
+			play_anim(&"dead")
 
 
 # --- Vật lý ----------------------------------------------------------------

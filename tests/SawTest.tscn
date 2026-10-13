@@ -1,4 +1,6 @@
-[gd_scene load_steps=2 format=3]
-[ext_resource type="Script" path="res://tests/saw_test.gd" id="1_script"]
-[node name="SawTest" type="Node2D"]
+[gd_scene format=3 uid="uid://v14xg44toodf"]
+
+[ext_resource type="Script" uid="uid://b5q7mt5d8m4mr" path="res://tests/saw_test.gd" id="1_script"]
+
+[node name="SawTest" type="Node2D" unique_id=952535131]
 script = ExtResource("1_script")

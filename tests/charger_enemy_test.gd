@@ -98,6 +98,10 @@ func _run() -> void:
 	_check(target.health.current == hp, "Stunned charger must not damage player")
 	charger.take_damage(1, target.global_position)
 	_check(charger.health.current == 1, "Charger must still receive damage while stunned")
+	# Player phai ra xa truoc khi cho state machine hoi, y giai thich o dong 68.
+	# Neu de player cach 1px, Hurt het -> Patrol -> thay player -> Windup ngay,
+	# bay sinh check "ve Patrol" luon do du logic AI van dung.
+	target.position.x = -500
 	await _frames(20)
 	_check(charger.current_state() == &"Patrol", "Damage recovery must return to Patrol")
 	charger.take_damage(1, target.global_position)

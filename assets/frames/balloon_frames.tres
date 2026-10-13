@@ -1,0 +1,121 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Explode/Explode_R_1.png" id="1_02v5k"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Explode/Explode_R_2.png" id="2_056o5"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Explode/Explode_R_3.png" id="3_mxuoq"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Explode/Explode_R_4.png" id="4_kv6rs"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Explode/Explode_R_5.png" id="5_6uutp"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Explode/Explode_R_6.png" id="6_3jymw"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Explode/Explode_R_7.png" id="7_u6bj6"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Explode/Explode_R_8.png" id="8_12t6t"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Idle_3/Idle_3_R_1.png" id="9_hkfb8"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Idle_3/Idle_3_R_2.png" id="10_d25ca"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Idle_3/Idle_3_R_3.png" id="11_u6iu8"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Idle_3/Idle_3_R_4.png" id="12_ay8bk"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Idle_2/Idle_2_R_1.png" id="13_6cso8"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Idle_2/Idle_2_R_2.png" id="14_76nqt"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Idle_2/Idle_2_R_3.png" id="15_1ljl6"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Idle_2/Idle_2_R_4.png" id="16_1w405"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Dash/Dash_R_1.png" id="17_n3fm3"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Dash/Dash_R_2.png" id="18_52wtj"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Dash/Dash_R_3.png" id="19_koudm"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Dash/Dash_R_4.png" id="20_i58p0"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Dash/Dash_R_5.png" id="21_q3pkh"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Dash/Dash_R_6.png" id="22_3xofd"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Dash/Dash_R_7.png" id="23_yi77f"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Balloon/Balloon_1/Dash/Dash_R_8.png" id="24_ji84m"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_02v5k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_056o5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_mxuoq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_kv6rs")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_6uutp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_3jymw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_u6bj6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_12t6t")
+}],
+"loop": 0,
+"name": &"dead",
+"speed": 16.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_hkfb8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_d25ca")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_u6iu8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_ay8bk")
+}],
+"loop": 1,
+"name": &"hit",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("13_6cso8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_76nqt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_1ljl6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_1w405")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_n3fm3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_52wtj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_koudm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_i58p0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_q3pkh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_3xofd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_yi77f")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_ji84m")
+}],
+"loop": 1,
+"name": &"walk",
+"speed": 14.0
+}]

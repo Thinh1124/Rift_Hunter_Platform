@@ -1,0 +1,89 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bee/Attack_2/Attack_2_R_1.png" id="1_nbmu1"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bee/Attack_2/Attack_2_R_2.png" id="2_btkk7"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bee/Attack_2/Attack_2_R_3.png" id="3_svc53"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bee/Attack_2/Attack_2_R_4.png" id="4_nw3sq"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bee/Attack_1/Attack_1_R_1.png" id="5_1yud8"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bee/Attack_1/Attack_1_R_2.png" id="6_pd77m"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bee/Attack_1/Attack_1_R_3.png" id="7_3pdg7"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bee/Attack_1/Attack_1_R_4.png" id="8_aty1o"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bee/Idle_2/Idle_2_R_1.png" id="9_3yg26"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bee/Idle_2/Idle_2_R_2.png" id="10_ickmb"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bee/Idle_2/Idle_2_R_3.png" id="11_g032t"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bee/Idle_2/Idle_2_R_4.png" id="12_jk6mi"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bee/Idle_4/Idle_4_R_1.png" id="13_xyrm0"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bee/Idle_4/Idle_4_R_2.png" id="14_uuhe3"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bee/Idle_4/Idle_4_R_3.png" id="15_6pyrx"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bee/Idle_4/Idle_4_R_4.png" id="16_rhc08"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_nbmu1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_btkk7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_svc53")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_nw3sq")
+}],
+"loop": 0,
+"name": &"dead",
+"speed": 14.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_1yud8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_pd77m")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_3pdg7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_aty1o")
+}],
+"loop": 1,
+"name": &"hit",
+"speed": 14.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_3yg26")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_ickmb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_g032t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_jk6mi")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("13_xyrm0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_uuhe3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_6pyrx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_rhc08")
+}],
+"loop": 1,
+"name": &"walk",
+"speed": 16.0
+}]

@@ -105,6 +105,67 @@ KHÔNG LÀM: đa ngôn ngữ, đồ họa nâng cao.
 
 ---
 
+## NÚT ẢO MOBILE — `scenes/ui/TouchControls.tscn`
+
+`CanvasLayer` layer 10, có sẵn trong `LevelBase.tscn` nên mọi màn đều tự có.
+Dùng `TouchScreenButton` → giữ nút phải **và** bấm nhảy cùng lúc vẫn được
+(mỗi nút giữ 1 touch index riêng).
+
+### Bố cục
+
+```
+┌──────────────────────────────────────────┐
+│                                          │   ← HUD (CanvasLayer riêng)
+│  ◀ ▶                            ⚔  ▲     │   ← 2 nút trái dưới, 2 nút phải dưới
+└──────────────────────────────────────────┘
+                                        ⬛   ← Interact, nằm TRÊN nút tấn công
+```
+
+| Nút | Vị trí | Màu | Icon |
+|---|---|---|---|
+| Left | dưới-trái | xanh xám `(0.38,0.50,0.72)` | mũi tên **trái** |
+| Right | dưới-trái | xanh xám | mũi tên **phải** |
+| Jump | dưới-phải, ngoài cùng | xanh lá `(0.28,0.76,0.36)` | mũi tên **lên** |
+| Attack | dưới-phải, trong Jump | đỏ `(0.86,0.30,0.22)` | **thanh kiếm** |
+| Interact | trên nút Attack | xanh dương `(0.28,0.56,0.90)` | cổng |
+
+### Icon
+
+Vẽ bằng `scripts/ui/pixel_icons.gd`, **không** dùng file ảnh:
+
+| Icon | Hàm |
+|---|---|
+| mũi tên trái | `PixelIcons.arrow(size, white, PI)` |
+| mũi tên phải | `PixelIcons.arrow(size, white, 0.0)` |
+| mũi tên lên | `PixelIcons.arrow(size, white, -PI * 0.5)` |
+| kiếm | `PixelIcons.sword(size, white)` |
+| cổng | `PixelIcons.gate(size, white)` |
+
+Trục Y trong màn hình hướng **xuống** → muốn mũi tên lên phải xoay **ngược**
+chiều kim đồng hồ, tức `angle = -PI/2`.
+
+`_circle_texture()` vẽ hình tròn rồi `_blit_centered()` dán icon ở chính giữa,
+cỡ icon = 50% cỡ nút. Pixel trong suốt bị bỏ, pixel trượt ra ngoài hình tròn
+cũng bị bỏ nên icon không bao giờ lọt ra viền.
+
+### Cỡ & an toàn
+
+Mọi nút bị kẹp ở tối thiểu `UIButton.MIN_TOUCH_SIZE` (48px) bất kể
+`button_scale` nhỏ đến đâu — `_layout()` và `_button_size_for()` dùng **cùng
+một phép tính**, nếu lệch thì `button_center()` (dùng cho test) sẽ trả về
+tâm sai so với vị trí vẽ thật.
+
+### Bật xem trên desktop
+
+`show_on_desktop` / `force_visible` mặc định **false** — chỉ hiện trên mobile.
+Muốn xem trên PC:
+
+- Scene `tests/EnemyGalleryTest.tscn` đã bật sẵn (`force_visible = true`,
+  `opacity = 1.0`)
+- Chụp ảnh: `godot --rendering-driver opengl3 --position -3000,-3000 res://tests/touch_shots.tscn`
+
+---
+
 ## KIỂM TRA CUỐI (end-to-end)
 - [ ] Boot → MainMenu → Chơi → Level1 → đóng cổng → Exit → LevelComplete → Level2
 - [ ] Chết hết mạng → GameOver → Chơi lại

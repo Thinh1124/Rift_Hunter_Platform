@@ -1,0 +1,185 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/levels/LevelBase.tscn" id="1_base"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/Mushroom.tscn" id="2_mushroom"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/Bomb.tscn" id="3_bomb"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/Bee.tscn" id="4_bee"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/ShooterEnemy.tscn" id="5_shooter"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/FlyingBug.tscn" id="6_bug"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/RockGrunt.tscn" id="7_rock"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/PatrolRockGrunt.tscn" id="8_patrol"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/ChargerEnemy.tscn" id="9_charger"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/SummonedPatrolEnemy.tscn" id="10_summon"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/Boss.tscn" id="11_boss"]
+
+[node name="EnemyGalleryTest" instance=ExtResource("1_base")]
+level_number = 1
+limit_left = 296
+limit_right = 1280
+limit_top = 0
+limit_bottom = 352
+season = "spring"
+
+[node name="PlayerSpawn" parent="." index="4"]
+position = Vector2(336, 320)
+
+[node name="TouchControls" parent="." index="6"]
+force_visible = true
+opacity = 1.0
+
+[node name="Mushroom" parent="Objects" instance=ExtResource("2_mushroom")]
+position = Vector2(440, 308)
+
+[node name="Bomb" parent="Objects" instance=ExtResource("3_bomb")]
+position = Vector2(544, 308)
+
+[node name="Bee" parent="Objects" instance=ExtResource("4_bee")]
+position = Vector2(604, 236)
+
+[node name="ShooterEnemy" parent="Objects" instance=ExtResource("5_shooter")]
+position = Vector2(664, 312)
+
+[node name="FlyingBug" parent="Objects" instance=ExtResource("6_bug")]
+position = Vector2(784, 208)
+
+[node name="RockGrunt" parent="Objects" instance=ExtResource("7_rock")]
+position = Vector2(880, 312)
+
+[node name="PatrolRockGrunt" parent="Objects" instance=ExtResource("8_patrol")]
+position = Vector2(976, 312)
+
+[node name="ChargerEnemy" parent="Objects" instance=ExtResource("9_charger")]
+position = Vector2(1060, 312)
+
+[node name="SummonedPatrolEnemy" parent="Objects" instance=ExtResource("10_summon")]
+position = Vector2(1140, 308)
+
+[node name="Boss" parent="Objects" instance=ExtResource("11_boss")]
+position = Vector2(1230, 270)
+arena_left = 296.0
+arena_right = 1280.0
+
+[node name="Labels" type="Node2D" parent="."]
+
+[node name="MushroomLabel" type="Label" parent="Labels"]
+z_index = 100
+position = Vector2(440, 250)
+theme_override_font_sizes/font_size = 9
+text = "MUSHROOM
+1 HP
+tuan 35"
+
+[node name="BombLabel" type="Label" parent="Labels"]
+z_index = 100
+position = Vector2(544, 250)
+theme_override_font_sizes/font_size = 9
+text = "BOMB
+2 HP
+tuan 26"
+
+[node name="BeeLabel" type="Label" parent="Labels"]
+z_index = 100
+position = Vector2(604, 180)
+theme_override_font_sizes/font_size = 9
+text = "BEE
+1 HP
+bay, duoi 110"
+
+[node name="ShooterLabel" type="Label" parent="Labels"]
+z_index = 100
+position = Vector2(664, 252)
+theme_override_font_sizes/font_size = 9
+text = "CACTUS
+1 HP
+ban 1/2s"
+
+[node name="FlyingBugLabel" type="Label" parent="Labels"]
+z_index = 100
+position = Vector2(784, 152)
+theme_override_font_sizes/font_size = 9
+text = "BALLOON
+1 HP
+bay, duoi 90"
+
+[node name="RockGruntLabel" type="Label" parent="Labels"]
+z_index = 100
+position = Vector2(880, 248)
+theme_override_font_sizes/font_size = 9
+text = "BRICKHEAD
+1 HP
+tuan"
+
+[node name="PatrolLabel" type="Label" parent="Labels"]
+z_index = 100
+position = Vector2(976, 248)
+theme_override_font_sizes/font_size = 9
+text = "BRICKHEAD
+1 HP
+tuan 40"
+
+[node name="ChargerLabel" type="Label" parent="Labels"]
+z_index = 100
+position = Vector2(1060, 236)
+theme_override_font_sizes/font_size = 9
+text = "CHARGER
+2 HP
+lao khi thay
+nguoi choi"
+
+[node name="SummonLabel" type="Label" parent="Labels"]
+z_index = 100
+position = Vector2(1140, 244)
+theme_override_font_sizes/font_size = 9
+text = "SUMMONED
+1 HP
+loai boss goi"
+
+[node name="BossLabel" type="Label" parent="Labels"]
+z_index = 100
+position = Vector2(1152, 156)
+theme_override_font_sizes/font_size = 9
+text = "DEMON A - BOSS
+20 HP
+2 giai doan
+goi quai 8s"
+
+[node name="InfoBar" type="CanvasLayer" parent="."]
+
+[node name="Back" type="ColorRect" parent="InfoBar"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -44.0
+offset_bottom = -4.0
+mouse_filter = 2
+color = Color(0.043137, 0.054902, 0.086275, 0.45)
+
+[node name="Margin" type="MarginContainer" parent="InfoBar"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = -42.0
+offset_right = -6.0
+offset_bottom = -6.0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="Row" type="HBoxContainer" parent="InfoBar/Margin"]
+mouse_filter = 2
+
+[node name="LegendText" type="Label" parent="InfoBar/Margin/Row"]
+size_flags_horizontal = 0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 9
+text = "XANH-LAM: sap tuong  |  DO: trung don  |  TRANG: choang / chet"
+
+[node name="Spacer" type="Control" parent="InfoBar/Margin/Row"]
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="HintText" type="Label" parent="InfoBar/Margin/Row"]
+mouse_filter = 2
+theme_override_font_sizes/font_size = 9
+horizontal_alignment = 2
+text = "A/D: di  Space: nhay  J: dan  X: dap  ESC: pause"

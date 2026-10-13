@@ -31,6 +31,23 @@ func _enemies_near(center: Vector2, tolerance: float) -> int:
 	return found
 
 
+## Đóng băng mọi quái đang sống.
+## Các check "vào lại vùng có sinh thêm quái không" đo khoảng cách tới spawner.
+## Quái đang đi sẽ làm kết quả khác nhau giữa các lần chạy, nên phải đứng yên.
+func _freeze_enemies() -> void:
+	for node in get_tree().get_nodes_in_group(&"enemy"):
+		(node as Node).set_physics_process(false)
+		var sm: Node = node.get_node_or_null("StateMachine") as Node
+		if sm != null:
+			sm.set_physics_process(false)
+
+
+## Spawner rải quái theo `radius` bằng RNG tự randomize -> mỗi lần chạy vị trí khác
+## nhau, cùng một bộ assert thì lúc xanh lúc đỏ. Ghim seed cho ổn định.
+func _seed(spawner: EnemySpawner, value: int) -> void:
+	spawner._rng.seed = value
+
+
 func _run() -> void:
 	var floor_body := StaticBody2D.new()
 	floor_body.position = Vector2(300, 240)
@@ -46,6 +63,11 @@ func _run() -> void:
 	var player := preload("res://scenes/player/Player.tscn").instantiate() as Player
 	player.position = Vector2(100, 230)
 	add_child(player)
+	# Player đứng yên: test chỉ kiểm tra Spawner, không cần Player rơi. Nếu Player
+	# rơi xuống quái vừa sinh thì can_stomp() trả true và quái bị giết ngay -
+	# khiến số quái còn sống trong bán kính dao động giữa các lần chạy.
+	player.set_physics_process(false)
+	player.state_machine.set_physics_process(false)
 	player.camera.enabled = false
 	var camera := Camera2D.new()
 	camera.position = Vector2(400, 320)
@@ -61,6 +83,7 @@ func _run() -> void:
 	spawner.radius = 48.0
 	spawner.once = true
 	add_child(spawner)
+	_seed(spawner, 424242)
 	await _frames(2)
 	_check(spawner.trigger_zone.collision_mask == 2, "TriggerZone must watch the Player layer")
 	_check(spawner.enemy_scene != null, "Spawner must have a default enemy_scene for drag-and-drop use")
@@ -81,6 +104,7 @@ func _run() -> void:
 	_check(puffs >= 3, "Spawning must emit a smoke puff per enemy")
 
 	# once = true -> rời rồi vào lại vẫn không đổ thêm.
+	_freeze_enemies()
 	player.position = away
 	player.velocity = Vector2.ZERO
 	await _frames(8)
@@ -97,12 +121,14 @@ func _run() -> void:
 	repeating.count = 2
 	repeating.once = false
 	add_child(repeating)
+	_seed(repeating, 13579)
 	var repeat_center := repeating.global_position
 	await _frames(2)
 	player.position = Vector2(600, 170)
 	player.velocity = Vector2.ZERO
 	await _frames(8)
 	_check(repeating.spawned_count() == 2, "once=false must spawn on every entry")
+	_freeze_enemies()
 	_check(_enemies_near(repeat_center, 96.0) == 2, "once=false must place its batch around the spawner")
 	player.position = away
 	player.velocity = Vector2.ZERO

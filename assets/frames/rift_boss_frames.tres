@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" format=3 uid="uid://x3on8oo6r12f"]
+[gd_resource type="SpriteFrames" format=3 uid="uid://r0b7sfnu7oxm"]
 
 [ext_resource type="Texture2D" uid="uid://ftmeiu1qvx38" path="res://assets/Traps/Spike Head/Idle.png" id="1_tex"]
 [ext_resource type="Texture2D" uid="uid://bdmub13bydtwv" path="res://assets/Traps/Spike Head/Blink (54x52).png" id="2_tex"]

@@ -83,7 +83,11 @@ func _run() -> void:
 	await _seconds(1.0)
 	_check(boss.current_state() == &"Stunned", "Dash at wall must stun")
 	_check(not boss.contact_hitbox.active, "Stunned Boss must be safe to touch")
-	_check(boss.global_position.x <= 256.1, "Boss must stay in arena")
+	# Tuong wall nam giua boss va tuong arena. Tinh tu body thuc te chu khong
+	# got so: doi kich thuoc collider boss la bai test nay se fail o chuyen
+	# khong do logic sai.
+	var wall_limit: float = boss.arena_right - boss._body_half_size.x + 0.1
+	_check(boss.global_position.x <= wall_limit, "Boss must stay in arena")
 	await _seconds(0.5)
 	_check(boss.current_state() == &"Stunned", "Wall stun must last 1 second")
 	await _seconds(0.6)
@@ -201,7 +205,8 @@ func _test_pacing() -> void:
 				hit_this_rest = true
 		else:
 			hit_this_rest = false
-		_check(encounter.position.x >= -256.1 and encounter.position.x <= 256.1, "Encounter must stay inside arena")
+		var inside: float = encounter.arena_right - encounter._body_half_size.x + 0.1
+		_check(encounter.position.x >= -inside and encounter.position.x <= inside, "Encounter must stay inside arena")
 	_check(encounter.dead and elapsed >= 60.0 and elapsed <= 90.0, "One-hit-per-cycle encounter should last 60-90 simulated seconds (actual %.1f)" % elapsed)
 	print("Seeded encounter duration (one hit per cycle): %.1f simulated seconds" % elapsed)
 	Engine.time_scale = 1.0

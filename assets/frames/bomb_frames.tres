@@ -1,0 +1,121 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Explode/Explode_R_1.png" id="1_qchra"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Explode/Explode_R_2.png" id="2_m6q1j"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Explode/Explode_R_3.png" id="3_3ge6t"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Explode/Explode_R_4.png" id="4_eyj7s"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Explode/Explode_R_5.png" id="5_lrg1d"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Explode/Explode_R_6.png" id="6_mvw2y"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Explode/Explode_R_7.png" id="7_mt1an"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Explode/Explode_R_8.png" id="8_gwlsj"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Explode/Explode_R_9.png" id="9_egd67"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Explode/Explode_R_10.png" id="10_1mm07"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Explode/Explode_R_11.png" id="11_p5nrt"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Explode/Explode_R_12.png" id="12_qns6k"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Jump_1/Jump_1_R_1.png" id="13_r37tg"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Jump_1/Jump_1_R_2.png" id="14_cyk55"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Jump_1/Jump_1_R_3.png" id="15_x0en2"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Jump_1/Jump_1_R_4.png" id="16_5o8ef"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Idle_1/Idle_1_R_1.png" id="17_djyuc"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Idle_1/Idle_1_R_2.png" id="18_8bcs7"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Idle_1/Idle_1_R_3.png" id="19_8wmqj"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Idle_1/Idle_1_R_4.png" id="20_shn4p"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Walk_1/Walk_1_R_1.png" id="21_wcpgt"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Walk_1/Walk_1_R_2.png" id="22_at3fe"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Walk_1/Walk_1_R_3.png" id="23_aof1t"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Bomb/Walk_1/Walk_1_R_4.png" id="24_b34tj"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_qchra")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_m6q1j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_3ge6t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_eyj7s")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_lrg1d")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_mvw2y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_mt1an")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_gwlsj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_egd67")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_1mm07")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_p5nrt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_qns6k")
+}],
+"loop": 0,
+"name": &"dead",
+"speed": 14.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("13_r37tg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_cyk55")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_x0en2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_5o8ef")
+}],
+"loop": 1,
+"name": &"hit",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_djyuc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_8bcs7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_8wmqj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_shn4p")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("21_wcpgt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_at3fe")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_aof1t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_b34tj")
+}],
+"loop": 1,
+"name": &"walk",
+"speed": 12.0
+}]

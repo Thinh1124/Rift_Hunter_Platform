@@ -1,0 +1,51 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/enemies/PatrolEnemy.tscn" id="1_patrol"]
+[ext_resource type="SpriteFrames" path="res://assets/frames/bomb_frames.tres" id="2_frames"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_body"]
+radius = 9.0
+height = 24.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hurt"]
+size = Vector2(18, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hit"]
+size = Vector2(18, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_stomp"]
+size = Vector2(20, 5)
+
+[node name="Bomb" node_paths=PackedStringArray("sprite") instance=ExtResource("1_patrol")]
+sprite = NodePath("AnimatedSprite2D")
+max_hp = 2
+speed = 26.0
+contact_damage = 1
+score_value = 150
+gravity = 900.0
+hurt_stun = 0.35
+knockback = 180.0
+knockback_lift = -140.0
+wall_check_distance = 10.0
+floor_check_distance = 20.0
+
+[node name="AnimatedSprite2D" parent="." index="0"]
+scale = Vector2(1.5, 1.5)
+sprite_frames = ExtResource("2_frames")
+animation = &"idle"
+autoplay = true
+
+[node name="CollisionShape2D" parent="." index="1"]
+shape = SubResource("CapsuleShape2D_body")
+
+[node name="CollisionShape2D" parent="Hurtbox" index="0"]
+shape = SubResource("RectangleShape2D_hurt")
+
+[node name="CollisionShape2D" parent="ContactHitbox" index="0"]
+shape = SubResource("RectangleShape2D_hit")
+
+[node name="StompZone" parent="." index="5"]
+position = Vector2(0, -14)
+
+[node name="CollisionShape2D" parent="StompZone" index="0"]
+shape = SubResource("RectangleShape2D_stomp")

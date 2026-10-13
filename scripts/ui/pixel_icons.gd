@@ -139,25 +139,50 @@ static func heart(size: int = 16, filled: bool = true, color: Color = Color(1.0,
 		return img)
 
 
-## Kiếm: lưỡi nhọn + chuôi chắn + cán. Dùng cho chỉ số ATK ở CharacterSelect.
+## Mũi tên chỉ hướng cho nút ảo (trái / phải / lên).
+## angle = 0 chĩa sang phải, PI sang trái, -PI/2 lên (trục Y trong màn hình
+## hướng xuống nên muốn lên phải xoay ngược chiều kim đồng hồ).
+static func arrow(size: int = 12, color: Color = Color(1, 1, 1), angle: float = 0.0) -> ImageTexture:
+	return _cached("arrow:%d:%s:%.4f" % [size, color.to_html(), angle], size, func(px: int) -> Image:
+		var img := _blank(px)
+		var c := Vector2(px * 0.5, px * 0.5)
+		var r: float = px * 0.30
+		# Tam giác chĩa sang +X quanh gốc, rồi xoay cả mẫu theo góc.
+		var pts := PackedVector2Array([
+			Vector2(r, 0.0),
+			Vector2(-r * 0.62, -r),
+			Vector2(-r * 0.62, r),
+		])
+		for y in px:
+			for x in px:
+				var local: Vector2 = (_center_of(x, y) - c).rotated(-angle)
+				if _point_in_polygon(local, pts):
+					img.set_pixel(x, y, color)
+		return img)
+
+
+## Kiếm: lưỡi nhọn + chuôi chắn + cán. Dùng cho chỉ số ATK ở CharacterSelect
+## và cho nút tấn công ảo trên mobile.
 static func sword(size: int = 12, color: Color = Color(0.88, 0.90, 0.96)) -> ImageTexture:
 	return _cached("sword:%d:%s" % [size, color.to_html()], size, func(px: int) -> Image:
 		var img := _blank(px)
 		var cx: float = px * 0.5
-		var half: float = px * 0.09          # nửa bề rộng lưỡi
-		var tip_y: float = px * 0.14        # lưỡi thuôn nhọn từ đây trở lên
-		var guard_y: float = px * 0.68
-		var guard := Rect2(Vector2(px * 0.26, guard_y), Vector2(px * 0.48, px * 0.10))
-		var handle := Rect2(Vector2(px * 0.43, px * 0.78), Vector2(px * 0.14, px * 0.15))
-		var pommel := Rect2(Vector2(px * 0.38, px * 0.90), Vector2(px * 0.24, px * 0.09))
-		var guard_c := color.darkened(0.38)
-		var handle_c := color.darkened(0.58)
+		# Be rộng phải đủ để nhìn ra kiếm ở cỡ 24px trên nút ảo. Lưỡi mảnh quá
+		# thì tỉ lệ này chỉ còn một sọc dọc trắng, không đọc được là kiếm.
+		var half: float = px * 0.13          # nửa bề rộng lưỡi
+		var tip_y: float = px * 0.12        # lưỡi thuôn nhọn từ đây trở lên
+		var guard_y: float = px * 0.66
+		var guard := Rect2(Vector2(px * 0.20, guard_y), Vector2(px * 0.60, px * 0.13))
+		var handle := Rect2(Vector2(px * 0.41, px * 0.79), Vector2(px * 0.18, px * 0.14))
+		var pommel := Rect2(Vector2(px * 0.35, px * 0.90), Vector2(px * 0.30, px * 0.10))
+		var guard_c := color.darkened(0.42)
+		var handle_c := color.darkened(0.62)
 		for y in px:
 			for x in px:
 				var p := _center_of(x, y)
 				if p.y >= tip_y and p.y <= guard_y and absf(p.x - cx) <= half:
 					img.set_pixel(x, y, color)
-				elif p.y < tip_y and absf(p.x - cx) <= (tip_y - p.y) * 0.5:
+				elif p.y < tip_y and absf(p.x - cx) <= (tip_y - p.y) * 0.75:
 					img.set_pixel(x, y, color)
 				elif guard.has_point(p):
 					img.set_pixel(x, y, guard_c)

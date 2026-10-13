@@ -1,0 +1,89 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/Enemies/Mushroom/Mushroom_1/Squash/Squash_R_1.png" id="1_srhib"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Mushroom/Mushroom_1/Squash/Squash_R_2.png" id="2_bcsmn"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Mushroom/Mushroom_1/Squash/Squash_R_3.png" id="3_hx5b8"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Mushroom/Mushroom_1/Squash/Squash_R_4.png" id="4_uo8ni"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Mushroom/Mushroom_1/Attack/Attack_R_1.png" id="5_io1ak"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Mushroom/Mushroom_1/Attack/Attack_R_2.png" id="6_60hit"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Mushroom/Mushroom_1/Attack/Attack_R_3.png" id="7_lnxvt"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Mushroom/Mushroom_1/Attack/Attack_R_4.png" id="8_f2ipc"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Mushroom/Mushroom_1/Idle/Idle_R_1.png" id="9_6rkxr"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Mushroom/Mushroom_1/Idle/Idle_R_2.png" id="10_oiu6q"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Mushroom/Mushroom_1/Idle/Idle_R_3.png" id="11_3udjr"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Mushroom/Mushroom_1/Idle/Idle_R_4.png" id="12_lf34i"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Mushroom/Mushroom_1/Walk/Walk_R_1.png" id="13_tbto6"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Mushroom/Mushroom_1/Walk/Walk_R_2.png" id="14_rs7hp"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Mushroom/Mushroom_1/Walk/Walk_R_3.png" id="15_q1km4"]
+[ext_resource type="Texture2D" path="res://assets/Enemies/Mushroom/Mushroom_1/Walk/Walk_R_4.png" id="16_f2r1j"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_srhib")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_bcsmn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_hx5b8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_uo8ni")
+}],
+"loop": 0,
+"name": &"dead",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_io1ak")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_60hit")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_lnxvt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_f2ipc")
+}],
+"loop": 1,
+"name": &"hit",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_6rkxr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_oiu6q")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_3udjr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_lf34i")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("13_tbto6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_rs7hp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_q1km4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_f2r1j")
+}],
+"loop": 1,
+"name": &"walk",
+"speed": 10.0
+}]

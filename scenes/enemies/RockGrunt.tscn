@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/enemies/Enemy.tscn" id="1_enemy"]
-[ext_resource type="Resource" path="res://assets/frames/rock_grunt_frames.tres" id="2_frames"]
+[ext_resource type="Resource" path="res://assets/frames/brickhead_frames.tres" id="2_frames"]
 
 [node name="RockGrunt" instance=ExtResource("1_enemy")]
 sprite = NodePath("AnimatedSprite2D")
@@ -21,6 +21,7 @@ detect_time = 0.25
 attack_delay = 0.6
 
 [node name="AnimatedSprite2D" parent="." index="0"]
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("2_frames")
 animation = &"idle"
 autoplay = true

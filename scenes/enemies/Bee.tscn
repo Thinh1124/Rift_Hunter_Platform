@@ -1,0 +1,54 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/enemies/FlyingEnemy.tscn" id="1_flying"]
+[ext_resource type="SpriteFrames" path="res://assets/frames/bee_frames.tres" id="2_frames"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_body"]
+radius = 7.0
+height = 16.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hurt"]
+size = Vector2(14, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hit"]
+size = Vector2(14, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_stomp"]
+size = Vector2(16, 4)
+
+[node name="Bee" node_paths=PackedStringArray("sprite") instance=ExtResource("1_flying")]
+sprite = NodePath("AnimatedSprite2D")
+max_hp = 1
+speed = 70.0
+amplitude = 25.0
+frequency = 2.5
+detect_radius = 140.0
+chase_speed = 110.0
+lose_target_time = 2.0
+contact_damage = 1
+score_value = 150
+hurt_stun = 0.2
+
+[node name="AnimatedSprite2D" parent="." index="0"]
+scale = Vector2(1, 1)
+sprite_frames = ExtResource("2_frames")
+animation = &"idle"
+autoplay = true
+
+[node name="CollisionShape2D" parent="." index="1"]
+shape = SubResource("CapsuleShape2D_body")
+
+[node name="CollisionShape2D" parent="Hurtbox" index="0"]
+shape = SubResource("RectangleShape2D_hurt")
+
+[node name="CollisionShape2D" parent="ContactHitbox" index="0"]
+shape = SubResource("RectangleShape2D_hit")
+
+[node name="StompZone" parent="." index="5"]
+position = Vector2(0, -10)
+
+[node name="CollisionShape2D" parent="StompZone" index="0"]
+shape = SubResource("RectangleShape2D_stomp")
+
+[node name="DetectArea" parent="." index="6"]
+scale = Vector2(1.2, 1.2)

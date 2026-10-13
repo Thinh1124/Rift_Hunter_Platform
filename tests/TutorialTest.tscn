@@ -1,9 +1,10 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://v7ar572t1jfm"]
 
-[ext_resource type="Script" path="res://tests/tutorial_test.gd" id="1_test"]
+[ext_resource type="Script" uid="uid://6m5xpc0rj8wc" path="res://tests/tutorial_test.gd" id="1_test"]
 [ext_resource type="PackedScene" path="res://scenes/ui/MainMenu.tscn" id="2_menu"]
 
-[node name="TutorialTest" type="Node"]
+[node name="TutorialTest" type="Node" unique_id=796840786]
 script = ExtResource("1_test")
 
-[node name="MainMenu" parent="." instance=ExtResource("2_menu")]
+[node name="MainMenu" parent="." unique_id=1874214594 instance=ExtResource("2_menu")]
+layout_mode = 3

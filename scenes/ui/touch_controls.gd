@@ -68,15 +68,29 @@ func _read_look_from_save() -> void:
 # --- Dựng nút --------------------------------------------------------------
 
 func _build_buttons() -> void:
-	# Màu đủ đậm để nhìn rõ trên nền sáng; viền sáng lên ở rìa nút.
-	_setup(_left, move_button_size, Color(0.38, 0.50, 0.72))
-	_setup(_right, move_button_size, Color(0.38, 0.50, 0.72))
-	_setup(_jump, jump_button_size, Color(0.28, 0.76, 0.36))
-	_setup(_attack, attack_button_size, Color(0.86, 0.30, 0.22))
-	_setup(_interact, interact_button_size, Color(0.28, 0.56, 0.90))
+	var white := Color(1.0, 1.0, 1.0)
+	# Di chuyển: tròn xanh + mũi tên chỉ hướng.
+	_setup(_left, move_button_size, Color(0.38, 0.50, 0.72),
+		PixelIcons.arrow(_icon_px(move_button_size), white, PI))
+	_setup(_right, move_button_size, Color(0.38, 0.50, 0.72),
+		PixelIcons.arrow(_icon_px(move_button_size), white, 0.0))
+	# Nhảy: tròn xanh lá + mũi tên lên.
+	_setup(_jump, jump_button_size, Color(0.28, 0.76, 0.36),
+		PixelIcons.arrow(_icon_px(jump_button_size), white, -PI * 0.5))
+	# Tấn công: tròn đỏ + thanh kiếm.
+	_setup(_attack, attack_button_size, Color(0.86, 0.30, 0.22),
+		PixelIcons.sword(_icon_px(attack_button_size), white))
+	# Tương tác: tròn xanh dương + cổng (dùng cho cổng / NPC / checkpoint).
+	_setup(_interact, interact_button_size, Color(0.28, 0.56, 0.90),
+		PixelIcons.gate(_icon_px(interact_button_size), white))
 
 
-func _setup(button: TouchScreenButton, size: float, tint: Color) -> void:
+## Cỡ icon = 50% cỡ nút, đủ rõ mà vẫn chừa viền tròn.
+func _icon_px(button_size: float) -> int:
+	return maxi(int(round(button_size * 0.50)), 8)
+
+
+func _setup(button: TouchScreenButton, size: float, tint: Color, icon: ImageTexture = null) -> void:
 	# Godot 4: TouchScreenButton chỉ có shape / shape_centered / texture_*,
 	# không có normal_offset (đó là API Godot 3).
 	# shape_centered = true -> shape canh giữa texture, position của node là góc trên-trái.
@@ -84,14 +98,14 @@ func _setup(button: TouchScreenButton, size: float, tint: Color) -> void:
 	circle.radius = size * 0.5
 	button.shape = circle
 	button.shape_centered = true
-	button.texture_normal = _circle_texture(size, tint)
-	button.texture_pressed = _circle_texture(size, tint.lightened(0.38))
+	button.texture_normal = _circle_texture(size, tint, icon)
+	button.texture_pressed = _circle_texture(size, tint.lightened(0.30), icon)
 	button.visibility_mode = 0  # 0 = Always (enum của TouchScreenButton chưa export tên)
 	button.modulate.a = opacity
 
 
-## Hình tròn placeholder vẽ bằng code (chưa có icon).
-func _circle_texture(size: float, tint: Color) -> ImageTexture:
+## Nút tròn, vẽ bằng code. `icon` được dán ở chính giữa (mặc định null = tròn trơn).
+func _circle_texture(size: float, tint: Color, icon: ImageTexture = null) -> ImageTexture:
 	var px: int = maxi(int(round(size)), 8)
 	var image := Image.create_empty(px, px, false, Image.FORMAT_RGBA8)
 	image.fill(Color(0, 0, 0, 0))
@@ -106,7 +120,34 @@ func _circle_texture(size: float, tint: Color) -> ImageTexture:
 				image.set_pixel(x, y, tint)
 			elif d <= r_outer:
 				image.set_pixel(x, y, rim)
+	if icon != null:
+		_blit_centered(image, icon)
 	return ImageTexture.create_from_image(image)
+
+
+## Dán icon vào giữa nút. Bỏ qua pixel trong suốt và pixel trượt ra ngoài hình
+## tròn, phần còn lại trộn alpha cho sắc nét mà không viền thô.
+func _blit_centered(dst: Image, icon: ImageTexture) -> void:
+	var src: Image = icon.get_image()
+	if src == null:
+		return
+	if src.is_compressed() and src.decompress() != OK:
+		return
+	var ox: int = int((dst.get_width() - src.get_width()) * 0.5)
+	var oy: int = int((dst.get_height() - src.get_height()) * 0.5)
+	for y in src.get_height():
+		for x in src.get_width():
+			var c: Color = src.get_pixel(x, y)
+			if c.a <= 0.0:
+				continue
+			var dx: int = ox + x
+			var dy: int = oy + y
+			if dx < 0 or dy < 0 or dx >= dst.get_width() or dy >= dst.get_height():
+				continue
+			var base: Color = dst.get_pixel(dx, dy)
+			if base.a <= 0.0:
+				continue  # Không vẽ icon tràn ra ngoài hình tròn.
+			dst.set_pixel(dx, dy, base.lerp(c, c.a))
 
 
 # --- Bố cục ---------------------------------------------------------------
