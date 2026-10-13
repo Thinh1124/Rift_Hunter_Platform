@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/character_data.gd" id="1_script"]
+[ext_resource type="SpriteFrames" path="res://assets/frames/pink_man_frames.tres" id="2_frames"]
+[ext_resource type="Texture2D" path="res://assets/Main Characters/Pink Man/Idle (32x32).png" id="3_tex"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_icon"]
+atlas = ExtResource("3_tex")
+region = Rect2(0, 0, 32, 32)
+
+[resource]
+script = ExtResource("1_script")
+id = &"pink_man"
+display_name = "Pink Man"
+icon = SubResource("AtlasTexture_icon")
+sprite_frames = ExtResource("2_frames")
+collision_size = Vector2(12, 20)
+sprite_offset = Vector2(0, -16)
+speed_mult = 1.0
+jump_mult = 1.0
+max_hp_bonus = 0
+attack_cooldown_mult = 1.0
+unlocked_by_default = true

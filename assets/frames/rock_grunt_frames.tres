@@ -1,0 +1,70 @@
+[gd_resource type="SpriteFrames" load_steps=12 format=3]
+
+[ext_resource type="Texture2D" uid="uid://c2bsmjbytvddk" path="res://assets/Traps/Rock Head/Idle.png" id="1_tex"]
+[ext_resource type="Texture2D" uid="uid://ddacb285bwwql" path="res://assets/Traps/Rock Head/Blink (42x42).png" id="2_tex"]
+
+[sub_resource type="AtlasTexture" id="atlas_1"]
+atlas = ExtResource("1_tex")
+region = Rect2(0, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="atlas_2"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="atlas_3"]
+atlas = ExtResource("2_tex")
+region = Rect2(42, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="atlas_4"]
+atlas = ExtResource("2_tex")
+region = Rect2(84, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="atlas_5"]
+atlas = ExtResource("2_tex")
+region = Rect2(126, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="atlas_6"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="atlas_7"]
+atlas = ExtResource("2_tex")
+region = Rect2(42, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="atlas_8"]
+atlas = ExtResource("2_tex")
+region = Rect2(84, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="atlas_9"]
+atlas = ExtResource("2_tex")
+region = Rect2(126, 0, 42, 42)
+
+[resource]
+animations = [{"frames": [{
+"duration": 1.0,
+"texture": SubResource("atlas_1")
+}], "loop": true, "name": &"idle", "speed": 6.0}, {"frames": [{
+"duration": 1.0,
+"texture": SubResource("atlas_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_5")
+}], "loop": true, "name": &"walk", "speed": 6.0}, {"frames": [{
+"duration": 1.0,
+"texture": SubResource("atlas_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_7")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_8")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_9")
+}], "loop": false, "name": &"hit", "speed": 12.0}]

@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scenes/objects/pickup.gd" id="1_pickup"]
+[ext_resource type="SpriteFrames" path="res://assets/frames/fruit_frames.tres" id="2_frames"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pickup"]
+radius = 10.0
+
+[node name="Pickup" type="Area2D"]
+z_index = 2
+collision_layer = 32
+collision_mask = 2
+monitoring = true
+monitorable = false
+script = ExtResource("1_pickup")
+kind = &"fruit"
+amount = 1
+spin = true
+sprite_frames = ExtResource("2_frames")
+sprite = NodePath("Sprite")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_pickup")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+rect = Rect2(-20, -20, 40, 40)

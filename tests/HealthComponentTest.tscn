@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://tests/health_component_test.gd" id="1_test"]
+[ext_resource type="Script" path="res://components/health_component.gd" id="2_health"]
+
+[node name="HealthComponentTest" type="Node"]
+script = ExtResource("1_test")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2_health")
+max_health = 3

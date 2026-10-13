@@ -1,0 +1,62 @@
+[gd_resource type="SpriteFrames" load_steps=10 format=3]
+
+[ext_resource type="Texture2D" uid="uid://bjjcm4038jsws" path="res://assets/Traps/Trampoline/Jump (28x28).png" id="1_tex"]
+
+[sub_resource type="AtlasTexture" id="atlas_1"]
+atlas = ExtResource("1_tex")
+region = Rect2(0, 0, 28, 28)
+
+[sub_resource type="AtlasTexture" id="atlas_2"]
+atlas = ExtResource("1_tex")
+region = Rect2(28, 0, 28, 28)
+
+[sub_resource type="AtlasTexture" id="atlas_3"]
+atlas = ExtResource("1_tex")
+region = Rect2(56, 0, 28, 28)
+
+[sub_resource type="AtlasTexture" id="atlas_4"]
+atlas = ExtResource("1_tex")
+region = Rect2(84, 0, 28, 28)
+
+[sub_resource type="AtlasTexture" id="atlas_5"]
+atlas = ExtResource("1_tex")
+region = Rect2(112, 0, 28, 28)
+
+[sub_resource type="AtlasTexture" id="atlas_6"]
+atlas = ExtResource("1_tex")
+region = Rect2(140, 0, 28, 28)
+
+[sub_resource type="AtlasTexture" id="atlas_7"]
+atlas = ExtResource("1_tex")
+region = Rect2(168, 0, 28, 28)
+
+[sub_resource type="AtlasTexture" id="atlas_8"]
+atlas = ExtResource("1_tex")
+region = Rect2(196, 0, 28, 28)
+
+[resource]
+animations = [{"frames": [{
+"duration": 1.0,
+"texture": SubResource("atlas_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_7")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_8")
+}], "loop": true, "name": &"spin", "speed": 14.0}]

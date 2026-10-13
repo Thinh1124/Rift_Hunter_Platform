@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://tests/fx_test.gd" id="1_test"]
+[ext_resource type="Script" path="res://scripts/camera_shake.gd" id="2_shake"]
+
+[node name="FXTest" type="Node2D"]
+script = ExtResource("1_test")
+
+[node name="World" type="Node2D" parent="."]
+
+[node name="Camera" type="Camera2D" parent="World"]
+position = Vector2(320, 180)
+script = ExtResource("2_shake")

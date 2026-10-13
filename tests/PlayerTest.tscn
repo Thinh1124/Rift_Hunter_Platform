@@ -1,0 +1,46 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://tests/player_test.gd" id="1_test"]
+[ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="2_player"]
+
+[sub_resource type="RectangleShape2D" id="Rect_ground_a"]
+size = Vector2(500, 200)
+
+[sub_resource type="RectangleShape2D" id="Rect_ground_b"]
+size = Vector2(660, 200)
+
+[sub_resource type="RectangleShape2D" id="Rect_wall"]
+size = Vector2(16, 88)
+
+[node name="PlayerTest" type="Node2D"]
+script = ExtResource("1_test")
+
+[node name="GroundA" type="StaticBody2D" parent="."]
+position = Vector2(50, 388)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundA"]
+shape = SubResource("Rect_ground_a")
+
+[node name="GroundB" type="StaticBody2D" parent="."]
+position = Vector2(670, 388)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundB"]
+shape = SubResource("Rect_ground_b")
+
+[node name="Wall" type="StaticBody2D" parent="."]
+position = Vector2(600, 244)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Wall"]
+shape = SubResource("Rect_wall")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(320, 180)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(120, 288)

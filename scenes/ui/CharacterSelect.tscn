@@ -1,0 +1,52 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/character_select.gd" id="1_select"]
+
+[node name="CharacterSelect" type="Control"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_select")
+columns = 3
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.09, 0.11, 0.16, 1)
+
+[node name="Layout" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="Layout"]
+theme_override_constants/separation = 6
+
+[node name="Title" type="Label" parent="Layout/VBox"]
+unique_name_in_owner = true
+text = "CHỌN NHÂN VẬT"
+horizontal_alignment = 1
+
+[node name="Scroll" type="ScrollContainer" parent="Layout/VBox"]
+size_flags_vertical = 3
+
+[node name="Grid" type="GridContainer" parent="Layout/VBox/Scroll"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+
+[node name="Back" type="Button" parent="Layout/VBox"]
+unique_name_in_owner = true
+text = "BACK"

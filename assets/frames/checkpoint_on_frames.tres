@@ -1,0 +1,76 @@
+[gd_resource type="SpriteFrames" load_steps=12 format=3]
+
+[ext_resource type="Texture2D" uid="uid://b7hgmv7rnpavo" path="res://assets/Items/Checkpoints/Checkpoint/Checkpoint (Flag Idle)(64x64).png" id="1_tex"]
+
+[sub_resource type="AtlasTexture" id="atlas_1"]
+atlas = ExtResource("1_tex")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="atlas_2"]
+atlas = ExtResource("1_tex")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="atlas_3"]
+atlas = ExtResource("1_tex")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="atlas_4"]
+atlas = ExtResource("1_tex")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="atlas_5"]
+atlas = ExtResource("1_tex")
+region = Rect2(256, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="atlas_6"]
+atlas = ExtResource("1_tex")
+region = Rect2(320, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="atlas_7"]
+atlas = ExtResource("1_tex")
+region = Rect2(384, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="atlas_8"]
+atlas = ExtResource("1_tex")
+region = Rect2(448, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="atlas_9"]
+atlas = ExtResource("1_tex")
+region = Rect2(512, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="atlas_10"]
+atlas = ExtResource("1_tex")
+region = Rect2(576, 0, 64, 64)
+
+[resource]
+animations = [{"frames": [{
+"duration": 1.0,
+"texture": SubResource("atlas_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_7")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_8")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_9")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_10")
+}], "loop": true, "name": &"on", "speed": 8.0}]

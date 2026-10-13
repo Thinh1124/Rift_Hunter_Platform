@@ -1,0 +1,42 @@
+[gd_resource type="SpriteFrames" load_steps=8 format=3]
+
+[ext_resource type="Texture2D" uid="uid://ftmeiu1qvx38" path="res://assets/Traps/Spike Head/Idle.png" id="1_tex"]
+[ext_resource type="Texture2D" uid="uid://bdmub13bydtwv" path="res://assets/Traps/Spike Head/Blink (54x52).png" id="2_tex"]
+
+[sub_resource type="AtlasTexture" id="atlas_1"]
+atlas = ExtResource("1_tex")
+region = Rect2(0, 0, 54, 52)
+
+[sub_resource type="AtlasTexture" id="atlas_2"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 0, 54, 52)
+
+[sub_resource type="AtlasTexture" id="atlas_3"]
+atlas = ExtResource("2_tex")
+region = Rect2(54, 0, 54, 52)
+
+[sub_resource type="AtlasTexture" id="atlas_4"]
+atlas = ExtResource("2_tex")
+region = Rect2(108, 0, 54, 52)
+
+[sub_resource type="AtlasTexture" id="atlas_5"]
+atlas = ExtResource("2_tex")
+region = Rect2(162, 0, 54, 52)
+
+[resource]
+animations = [{"frames": [{
+"duration": 1.0,
+"texture": SubResource("atlas_1")
+}], "loop": true, "name": &"idle", "speed": 6.0}, {"frames": [{
+"duration": 1.0,
+"texture": SubResource("atlas_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_5")
+}], "loop": true, "name": &"walk", "speed": 8.0}]
