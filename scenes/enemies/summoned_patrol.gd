@@ -8,21 +8,6 @@ func _ready() -> void:
 	enter_state(STATE_PATROL)
 
 
-func tick_patrol(delta: float) -> void:
-	_apply_gravity(delta)
-	if is_on_floor():
-		velocity.y = gravity * delta
-	_update_raycast_direction()
-	wall_check.force_raycast_update()
-	floor_check.force_raycast_update()
-	if wall_check.is_colliding() or (is_on_floor() and not floor_check.is_colliding()):
-		_flip()
-		velocity.x = 0.0
-	else:
-		velocity.x = float(direction) * speed
-	move_and_slide()
-
-
 func enter_state(state_name: StringName) -> void:
 	super.enter_state(state_name)
 	if state_name == STATE_HURT:

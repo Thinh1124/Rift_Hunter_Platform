@@ -32,7 +32,7 @@ signal closed(gate_id: StringName)
 @export var start_active: bool = true
 ## Cần đủ 3 anim open_idle/closing/closed. Bỏ trống -> dựng hình cổng tím.
 @export var frames: SpriteFrames
-@export var close_sfx: StringName = &"pickup"
+@export var close_sfx: StringName = &"gate_close"
 
 @onready var sprite: AnimatedSprite2D = $Sprite
 @onready var interact_zone: Area2D = $InteractZone
@@ -102,6 +102,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _enter(next: GateState) -> void:
+	var previous: GateState = state
 	state = next
 	match next:
 		GateState.INACTIVE:
@@ -111,6 +112,8 @@ func _enter(next: GateState) -> void:
 			_reset_bar()
 			hide()
 		GateState.OPEN:
+			if previous != GateState.OPEN and previous != GateState.CLOSING:
+				AudioManager.play_sfx(&"gate_open")
 			_reset_bar()
 			_play(ANIM_OPEN)
 			open_glow.emitting = true

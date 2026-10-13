@@ -72,6 +72,7 @@ func _on_boss_hp_changed(cur: int, maximum: int) -> void:
 	EventBus.boss_hp_changed.emit(cur, maximum)
 	if not dead and cur > 0 and phase == 1 and float(cur) <= float(maximum) * phase2_at:
 		phase = 2
+		AudioManager.play_sfx(&"boss_phase")
 		_phase_flash_left = 0.3
 		EventBus.request_shake.emit(2.0, 0.2)
 		summon_timer.start(maxf(summon_interval, 0.1))
@@ -80,6 +81,8 @@ func _on_boss_hp_changed(cur: int, maximum: int) -> void:
 func _on_damaged(_amount: int, _from_pos: Vector2) -> void:
 	if dead:
 		return
+	if health.is_alive():
+		AudioManager.play_sfx(&"enemy_hurt")
 	_start_flash()
 	_damage_left = damage_iframe
 	health.invincible = true
@@ -109,11 +112,13 @@ func enter_state(state_name: StringName) -> void:
 			_state_left = rest_time
 			play_anim(&"idle")
 		TELEGRAPH:
+			AudioManager.play_sfx(&"enemy_detect")
 			velocity.x = 0.0
 			_state_left = telegraph
 			_face_player()
 			play_anim(&"idle")
 		DASH:
+			AudioManager.play_sfx(&"boss_dash")
 			# Always run toward the opposite side, even with player behind us.
 			direction = 1 if global_position.x <= (arena_left + arena_right) * 0.5 else -1
 			_state_left = absf(arena_right - arena_left) / maxf(dash_speed * speed_multiplier(), 1.0) + 1.0
@@ -129,6 +134,7 @@ func enter_state(state_name: StringName) -> void:
 			_fire_fan()
 			state_machine.change_state(REST)
 		STUNNED:
+			AudioManager.play_sfx(&"projectile_hit")
 			velocity.x = 0.0
 			_state_left = 1.0
 			play_anim(&"hit")
@@ -262,11 +268,13 @@ func _spawn_projectile(at: Vector2, heading: Vector2, projectile_speed: float, w
 
 
 func _emit_slam_waves() -> void:
+	AudioManager.play_sfx(&"boss_slam")
 	for side in [-1, 1]:
 		_spawn_projectile(global_position + Vector2(side * (_body_half_size.x + 8.0), _body_half_size.y - 8.0), Vector2(side, 0), slam_wave_speed, true)
 
 
 func _fire_fan() -> void:
+	AudioManager.play_sfx(&"boss_shoot")
 	_face_player()
 	shot_point.position.x = direction * absf(shot_point.position.x)
 	var aim := Vector2(direction, 0)
@@ -283,6 +291,7 @@ func _on_summon_timeout() -> void:
 	_spawned_this_gate = false
 	summon_gate.global_position = _gate_anchor
 	summon_gate.show()
+	AudioManager.play_sfx(&"boss_summon")
 
 
 func _tick_gate(delta: float) -> void:

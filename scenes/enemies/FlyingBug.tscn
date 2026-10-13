@@ -7,8 +7,6 @@
 sprite = NodePath("AnimatedSprite2D")
 max_hp = 1
 speed = 60.0
-amplitude = 20.0
-frequency = 2.0
 detect_radius = 120.0
 chase_speed = 90.0
 lose_target_time = 2.0
@@ -22,6 +20,3 @@ scale = Vector2(1.0, 1.0)
 sprite_frames = ExtResource("2_frames")
 animation = &"idle"
 autoplay = true
-
-[node name="DetectArea" parent="." index="6"]
-scale = Vector2(2, 2)

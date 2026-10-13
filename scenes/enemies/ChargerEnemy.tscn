@@ -1,30 +1,27 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3 uid="uid://umlm5ndy0lsh"]
 
 [ext_resource type="PackedScene" path="res://scenes/enemies/Enemy.tscn" id="1_enemy"]
-[ext_resource type="Script" path="res://scenes/enemies/charger_enemy.gd" id="2_charger"]
-[ext_resource type="Script" path="res://scenes/enemies/states/charger_state.gd" id="3_state"]
+[ext_resource type="Script" uid="uid://ixc1th61uxhf" path="res://scenes/enemies/charger_enemy.gd" id="2_charger"]
+[ext_resource type="Script" uid="uid://75qm0xgkfcax" path="res://scenes/enemies/states/charger_state.gd" id="3_state"]
 [ext_resource type="SpriteFrames" path="res://assets/frames/brickhead_frames.tres" id="4_frames"]
 
-[node name="ChargerEnemy" node_paths=PackedStringArray("sprite") instance=ExtResource("1_enemy")]
+[node name="ChargerEnemy" unique_id=2026132431 node_paths=PackedStringArray("sprite") instance=ExtResource("1_enemy")]
 script = ExtResource("2_charger")
-sprite = NodePath("AnimatedSprite2D")
-max_hp = 2
-speed = 30.0
 detect = 160.0
 windup = 0.5
 dash_speed = 200.0
 stun_time = 1.5
 cooldown = 1.0
+max_hp = 2
 knockback_lift = 0.0
+speed = 30.0
+sprite = NodePath("AnimatedSprite2D")
 
 [node name="AnimatedSprite2D" parent="." index="0"]
+position = Vector2(1, -8)
 scale = Vector2(1, 1)
 sprite_frames = ExtResource("4_frames")
 animation = &"idle"
-
-[node name="ContactHitbox" parent="." index="4"]
-collision_layer = 16
-collision_mask = 2
 
 [node name="Patrol" parent="StateMachine" index="0"]
 script = ExtResource("3_state")
@@ -32,22 +29,24 @@ script = ExtResource("3_state")
 [node name="Hurt" parent="StateMachine" index="4"]
 script = ExtResource("3_state")
 
-[node name="Windup" type="Node" parent="StateMachine"]
+[node name="Windup" type="Node" parent="StateMachine" index="6" unique_id=1408764866]
 script = ExtResource("3_state")
 
-[node name="Dash" type="Node" parent="StateMachine"]
+[node name="Dash" type="Node" parent="StateMachine" index="7" unique_id=1210067792]
 script = ExtResource("3_state")
 
-[node name="Stunned" type="Node" parent="StateMachine"]
+[node name="Stunned" type="Node" parent="StateMachine" index="8" unique_id=1566850406]
 script = ExtResource("3_state")
 
-[node name="Cooldown" type="Node" parent="StateMachine"]
+[node name="Cooldown" type="Node" parent="StateMachine" index="9" unique_id=967620250]
 script = ExtResource("3_state")
 
-[node name="SightRay" type="RayCast2D" parent="."]
+[node name="VisibleOnScreenNotifier2D" parent="." index="7"]
+position = Vector2(-2, -3)
+
+[node name="SightRay" type="RayCast2D" parent="." index="8" unique_id=255960947]
 target_position = Vector2(160, 0)
 collision_mask = 3
 
-[node name="WallCheck" type="RayCast2D" parent="."]
+[node name="WallCheck" type="RayCast2D" parent="." index="9" unique_id=281896431]
 target_position = Vector2(7, 0)
-collision_mask = 1

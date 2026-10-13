@@ -102,6 +102,9 @@ const BASE_BUFFER: float = 0.1
 @export_group("Character")
 @export var use_character_data: bool = true
 @export var character_override: CharacterData
+@export_range(0.1, 2.0, 0.05) var character_size_multiplier: float = 0.8
+@export_range(0.1, 1.0, 0.05) var footstep_interval: float = 0.3
+var _footstep_left: float = 0.0
 
 @export_group("Refs")
 @export var sprite: AnimatedSprite2D
@@ -242,13 +245,13 @@ func apply_character(data: CharacterData) -> void:
 	_air_jump_used = false
 	_max_hp = maxi(max_hp + data.max_hp_bonus, 1)
 	_attack_cooldown = attack_cooldown * data.attack_cooldown_mult
-	if data.projectile_scene != null:
-		projectile_scene = data.projectile_scene
+	projectile_scene = data.projectile_scene if data.projectile_scene != null else preload("res://scenes/objects/Projectile.tscn")
 	if sprite != null:
 		var frames: SpriteFrames = data.validated_sprite_frames()
 		if frames != null:
 			sprite.sprite_frames = frames
-		sprite.position = data.sprite_offset
+		sprite.scale = Vector2.ONE * character_size_multiplier
+		sprite.position = data.sprite_offset * character_size_multiplier
 		_play_spawn_animation()
 	_apply_body_size(data.collision_size)
 	_apply_derived()
@@ -263,17 +266,17 @@ func _apply_body_size(size: Vector2) -> void:
 		if body == null:
 			body = CapsuleShape2D.new()
 			body_shape.shape = body
-		body.radius = w * 0.5
-		body.height = maxf(h, w)
-		body_shape.position = Vector2(0.0, -h * 0.5)
+		body.radius = w * 0.5 * character_size_multiplier
+		body.height = maxf(h, w) * character_size_multiplier
+		body_shape.position = Vector2(0.0, -h * 0.5) * character_size_multiplier
 	if hurt_shape != null:
 		var hurt := hurt_shape.shape as CapsuleShape2D
 		if hurt == null:
 			hurt = CapsuleShape2D.new()
 			hurt_shape.shape = hurt
-		hurt.radius = maxf(w * 0.5 - 1.0, 1.0)
-		hurt.height = maxf(h - 2.0, 2.0)
-		hurt_shape.position = Vector2(0.0, -h * 0.5 + 1.0)
+		hurt.radius = maxf(w * 0.5 - 1.0, 1.0) * character_size_multiplier
+		hurt.height = maxf(h - 2.0, 2.0) * character_size_multiplier
+		hurt_shape.position = Vector2(0.0, -h * 0.5 + 1.0) * character_size_multiplier
 
 
 func _apply_derived() -> void:
@@ -297,6 +300,7 @@ func _apply_derived() -> void:
 # --- Vật lý ---------------------------------------------------------------
 
 func _physics_process(delta: float) -> void:
+	_update_footsteps(delta)
 	_poll_input()
 	_read_direction()
 	_apply_gravity(delta)
@@ -383,7 +387,7 @@ func _update_look_ahead(delta: float) -> void:
 func _update_throw_point() -> void:
 	if throw_point == null:
 		return
-	throw_point.position = Vector2(throw_offset * float(facing), throw_point.position.y)
+	throw_point.position = Vector2(throw_offset * float(facing) * character_size_multiplier, throw_point.position.y)
 
 
 ## Đếm ngược khiên. Hết giờ -> tắt khiên (i-frame vẫn còn nếu đang chạy).
@@ -453,7 +457,6 @@ func kill_by_hazard() -> void:
 	if iframe_timer != null:
 		iframe_timer.stop()
 	health.invincible = false
-	AudioManager.play_sfx(&"player_die")
 	health.take_damage(health.current, global_position)
 
 
@@ -532,14 +535,13 @@ func throw_projectile() -> Projectile:
 	if projectile == null:
 		push_warning("Player: projectile_scene gốc phải là Projectile.")
 		return null
-	parent.add_child(projectile)
-	projectile.global_position = throw_point.global_position if throw_point != null else global_position
 	projectile.direction = facing
 	projectile.speed = projectile_speed
 	projectile.life = projectile_life
+	parent.add_child(projectile)
+	projectile.global_position = throw_point.global_position if throw_point != null else global_position
 	if attack_cooldown_timer != null:
-		attack_cooldown_timer.start(attack_cooldown)
-	AudioManager.play_sfx(&"player_attack")
+		attack_cooldown_timer.start()
 	return projectile
 
 
@@ -625,6 +627,7 @@ func do_jump() -> bool:
 		last_jump_was_air = true
 		velocity.y = _jump_velocity * air_jump_mult
 	state_machine.change_state(STATE_JUMP)
+	AudioManager.play_sfx(&"double_jump" if last_jump_was_air else &"jump")
 	# Nhảy lần 2 xảy ra khi đã ở sẵn state Jump -> change_state() là no-op nên
 	# enter() không chạy, animation sẽ không đổi. Phát tay ở đây.
 	if state_machine.is_current(STATE_JUMP):
@@ -649,6 +652,7 @@ func _apply_jump_cut() -> void:
 
 func notify_landed() -> void:
 	_air_jump_used = false
+	AudioManager.play_sfx(&"land")
 	DustFX.spawn(get_parent(), global_position)
 	landed.emit()
 
@@ -681,6 +685,7 @@ func play_animation_or(anim: StringName, fallback: StringName) -> void:
 func _play_spawn_animation() -> void:
 	if sprite == null:
 		return
+	AudioManager.play_sfx(&"player_appear")
 	if sprite.sprite_frames != null and sprite.sprite_frames.has_animation(&"appear"):
 		play_animation(&"appear")
 		# appear là clip một lần: hết clip -> idle. CONNECT_ONE_SHOT nên tự rút.
@@ -693,6 +698,16 @@ func _play_spawn_animation() -> void:
 
 func _on_spawn_animation_finished() -> void:
 	play_animation(&"idle")
+
+
+func _update_footsteps(delta: float) -> void:
+	if not control_enabled or not is_on_floor() or current_state() != STATE_RUN or absf(velocity.x) < 1.0:
+		_footstep_left = 0.0
+		return
+	_footstep_left -= delta
+	if _footstep_left <= 0.0:
+		_footstep_left = footstep_interval
+		AudioManager.play_sfx(&"footstep")
 
 
 func set_control_enabled(value: bool) -> void:

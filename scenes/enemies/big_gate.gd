@@ -10,7 +10,7 @@ extends MonsterGate
 @export_range(1, 60, 1) var burst_amount: int = 36
 @export_range(0.0, 2.0, 0.05) var burst_time: float = 0.9
 @export_range(0.0, 20.0, 0.5) var shake_strength: float = 7.0
-@export var big_gate_sfx: StringName = &"pickup"
+@export var big_gate_sfx: StringName = &"boss_slam"
 
 @onready var burst: CPUParticles2D = $Burst
 @onready var burst_glow: Sprite2D = $BurstGlow
@@ -37,6 +37,7 @@ func _on_closed() -> void:
 
 
 func _play_burst() -> void:
+	AudioManager.play_sfx(big_gate_sfx)
 	burst.restart()
 	burst_glow.visible = true
 	var tween := create_tween()

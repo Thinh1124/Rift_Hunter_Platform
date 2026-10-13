@@ -44,6 +44,7 @@ func _try_start(body: Node2D) -> void:
 		var contact := rider.get_slide_collision(index)
 		if contact.get_collider() == self and contact.get_normal().dot(Vector2.UP) > 0.5:
 			state = PlatformState.SHAKING
+			AudioManager.play_sfx(&"platform_shake")
 			_delay_left = fall_delay
 			return
 
@@ -72,6 +73,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _start_falling() -> void:
+	AudioManager.play_sfx(&"platform_fall")
 	state = PlatformState.FALLING
 	_fall_speed = 0.0
 	sprite.position = _sprite_position
@@ -119,6 +121,7 @@ func _deactivate() -> void:
 
 
 func _begin_respawn() -> void:
+	AudioManager.play_sfx(&"platform_respawn")
 	state = PlatformState.RESPAWNING
 	global_transform = _spawn_transform
 	sprite.position = _sprite_position

@@ -15,7 +15,7 @@ const TUTORIAL_LEVEL: int = 0
 const BOSS_LEVEL: int = 6
 const START_LIVES: int = 3
 ## Số mảnh Rift cần thu trong một màn để mở cánh cổng ra.
-const SHARDS_REQUIRED: int = 10
+const SHARDS_REQUIRED: int = 5
 const SHARD_SCORE: int = 50
 const ENEMY_KILL_SCORE: int = 200
 const BOSS_KILL_SCORE: int = 2000
@@ -297,6 +297,8 @@ func go_to_level(level: int) -> void:
 	if not ResourceLoader.exists(path):
 		push_error("GameManager: chưa có scene ải '%s' (cần tạo %s)." % [path, path])
 		return
+	shard_count = 0
+	EventBus.shards_changed.emit(shard_count, SHARDS_REQUIRED)
 	_change_scene(path)
 
 

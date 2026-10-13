@@ -39,4 +39,4 @@ func _ready() -> void:
 	GameManager.last_checkpoint = player_spawn.global_position
 	# register_gates already publishes EventBus.gates_changed, including 0/0.
 	GameManager.register_gates()
-	AudioManager.play_music(music)
+	AudioManager.play_music(music if music != null else AudioManager.music_for_level(level_number))

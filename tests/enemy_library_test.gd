@@ -27,7 +27,7 @@ const GROUND: Array[String] = [
 	"res://scenes/enemies/Bomb.tscn",
 ]
 
-const FLYING: Array[String] = ["res://scenes/enemies/Bee.tscn"]
+const FLYING: Array[String] = ["res://scenes/enemies/Bee.tscn", "res://scenes/enemies/FlyingBug.tscn"]
 
 
 func _ready() -> void:
@@ -87,7 +87,8 @@ func _run() -> void:
 	_floor(Vector2(0, 140), Vector2(600, 20))
 	for path in GROUND:
 		await _test_ground(path)
-	await _test_flying(FLYING[0])
+	for path in FLYING:
+		await _test_flying(path)
 	print("EnemyLibrary checks complete: %d failures" % failures)
 	get_tree().quit(0 if failures == 0 else 1)
 
@@ -122,8 +123,13 @@ func _test_ground(path: String) -> void:
 
 	# --- Dung san truoc khi cho state machine hoi ---
 	var ledge := _floor(Vector2(-70, 60), Vector2(140, 16))
+	var ledge_enemy := (load(path) as PackedScene).instantiate() as PatrolEnemy
+	ledge_enemy.position = Vector2(-70, 30)
+	add_child(ledge_enemy)
 	await _frames(90)
-	_check(enemy.global_position.x < 40.0, "%s must not walk off the ledge" % label)
+	_check(ledge_enemy.global_position.x < 0.0 and ledge_enemy.global_position.y < 60.0,
+		"%s must stay on the platform where it spawned" % label)
+	ledge_enemy.queue_free()
 	ledge.queue_free()
 
 	# --- Trung don. Enemy 1 HP chet ngay nen khong co state Hurt; enemy nhieu HP
@@ -164,7 +170,9 @@ func _test_ground(path: String) -> void:
 
 func _test_flying(path: String) -> void:
 	var label: String = path.get_file().get_basename()
-	var enemy: Enemy = (load(path) as PackedScene).instantiate() as Enemy
+	var enemy: FlyingEnemy = (load(path) as PackedScene).instantiate() as FlyingEnemy
+	enemy.max_hp = 2
+	enemy.lose_target_time = 0.05
 	enemy.position = Vector2(0, 60)
 	add_child(enemy)
 	await _frames(6)
@@ -180,23 +188,45 @@ func _test_flying(path: String) -> void:
 	_check(not body.has_gravity, "%s must not be pulled down by gravity" % label)
 	_check(enemy.get_node_or_null("DetectArea") != null, "%s must have a DetectArea" % label)
 
-	# Bay ngang + dao chieu doc, khong dung y tren.
-	var start_y: float = enemy.global_position.y
-	var highest: float = start_y
-	var lowest: float = start_y
-	enemy.state_machine.change_state(&"Patrol")
-	await _frames(90)
-	for i in 30:
-		await get_tree().physics_frame
-		highest = minf(highest, enemy.global_position.y)
-		lowest = maxf(lowest, enemy.global_position.y)
-	_check(lowest - highest > 4.0, "%s must drift vertically while patrolling" % label)
-	_check(enemy.global_position.y < 140.0, "%s must never sink to the floor" % label)
+	_check(enemy.state_machine.states.size() == 3, "%s must have exactly three states" % label)
+	for state: StringName in [&"Idle", &"Dead", &"DetectPlayer"]:
+		_check(enemy.state_machine.states.has(state), "%s must contain %s" % [label, state])
+	var start: Vector2 = enemy.global_position
+	await _frames(30)
+	_check(enemy.current_state() == &"Idle", "%s must start idle without a player nearby" % label)
+	_check(enemy.global_position.is_equal_approx(start), "%s must hover in place without drifting" % label)
+
+	var target := preload("res://scenes/player/Player.tscn").instantiate() as Player
+	target.position = Vector2(500, -200)
+	add_child(target)
+	target.set_physics_process(false)
+	target.state_machine.set_physics_process(false)
+	target.state_machine.set_process_unhandled_input(false)
+	target.health.invincible = true
+	target.velocity = Vector2.ZERO
+	target.position = enemy.global_position + Vector2(50, -20)
+	var distance_before: float = enemy.global_position.distance_to(target.global_position)
+	await _frames(15)
+	_check(enemy.current_state() == &"DetectPlayer", "%s must chase a detected player" % label)
+	_check(enemy.global_position.distance_to(target.global_position) < distance_before, "%s must fly directly toward the player" % label)
+	_check(is_zero_approx(enemy.player_lost_timer), "%s must not lose a player still in range" % label)
+
+	enemy.take_damage(1, target.global_position)
+	_check(not enemy.dead and enemy.current_state() == &"DetectPlayer", "%s nonlethal damage must not add a Hurt state" % label)
+	target.position = Vector2(500, -200)
+	await _frames(10)
+	_check(enemy.current_state() == &"Idle", "%s must return to Idle after losing its target" % label)
+	var stopped: Vector2 = enemy.global_position
+	await _frames(10)
+	_check(enemy.global_position.is_equal_approx(stopped), "%s must stop where it lost the target, without teleporting" % label)
 
 	# Chet cung phai rơi manh.
 	enemy.take_damage(9, enemy.global_position + Vector2(30, 0))
 	await _frames(10)
-	_check(enemy.dead, "%s must die when damaged" % label)
+	_check(enemy.dead and enemy.current_state() == &"Dead", "%s must enter Dead when damaged lethally" % label)
+	enemy._on_detect_body_entered(target)
+	_check(enemy.current_state() == &"Dead", "%s detection must not revive a dead enemy" % label)
+	target.queue_free()
 	if is_instance_valid(enemy):
 		enemy.queue_free()
 	await _frames(2)

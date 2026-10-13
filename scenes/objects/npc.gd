@@ -90,6 +90,7 @@ func _open_dialogue() -> void:
 	_open_key = key
 	exclaim_icon.visible = false
 	bubble.open(DialogueDB.lines(dialogue_id, key))
+	AudioManager.play_sfx(&"npc_dialogue")
 
 
 func _face_towards(target: Node2D) -> void:

@@ -46,6 +46,7 @@ func _physics_process(delta: float) -> void:
 			if sprite != null:
 				sprite.modulate = _base_modulate
 	elif _fire_left <= 0.0 and can_see_player():
+		AudioManager.play_sfx(&"enemy_detect")
 		_telegraph_left = 0.3
 	play_anim(&"idle")
 
@@ -63,6 +64,7 @@ func can_see_player() -> bool:
 
 
 func _fire() -> void:
+	AudioManager.play_sfx(&"enemy_attack")
 	var projectile := BULLET.instantiate() as EnemyProjectile
 	projectile.position = (get_parent() as Node2D).to_local(global_position + Vector2(direction * 12, 0))
 	projectile.travel_direction = Vector2(direction, 0)
@@ -72,6 +74,8 @@ func _fire() -> void:
 
 
 func _on_damaged(_amount: int, _from_pos: Vector2) -> void:
+	if health.is_alive():
+		AudioManager.play_sfx(&"enemy_hurt")
 	_start_flash()
 	_telegraph_left = -1.0
 	_fire_left = fire_interval

@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://ckeg4xiqpaljj"]
+[gd_scene load_steps=7 format=3 uid="uid://ckeg4xiqpaljj"]
 
 [ext_resource type="Script" uid="uid://dmr66oai523tb" path="res://scenes/ui/hud.gd" id="1_script"]
 [ext_resource type="Script" uid="uid://ove8hb71ugsp" path="res://scenes/ui/safe_area_margin.gd" id="2_safe"]
 [ext_resource type="PackedScene" path="res://scenes/ui/PipRow.tscn" id="3_piprow"]
 [ext_resource type="Texture2D" path="res://assets/Menu/Buttons/Settings.png" id="4_pause"]
 [ext_resource type="Texture2D" path="res://assets/Items/Checkpoints/End/End (Idle).png" id="5_gate"]
+[ext_resource type="Texture2D" path="res://addons/pixel_ui/bars/bar_red.png" id="6_boss_bar"]
 
 [node name="HUD" type="CanvasLayer"]
 layer = 5
@@ -104,7 +105,7 @@ stretch_mode = 5
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
-text = "0/10"
+text = "0/5"
 vertical_alignment = 1
 
 [node name="PauseButton" type="Button" parent="SafeArea/Rows/TopBar"]
@@ -116,7 +117,7 @@ tooltip_text = "Pause"
 icon = ExtResource("4_pause")
 expand_icon = true
 
-[node name="BossRow" type="HBoxContainer" parent="SafeArea/Rows"]
+[node name="BossRow" type="VBoxContainer" parent="SafeArea/Rows"]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
@@ -135,7 +136,14 @@ vertical_alignment = 1
 [node name="BossBar" type="TextureProgressBar" parent="SafeArea/Rows/BossRow"]
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(300, 10)
+texture_filter = 1
+custom_minimum_size = Vector2(427, 10)
 layout_mode = 2
 size_flags_horizontal = 4
 value = 100.0
+texture_progress = ExtResource("6_boss_bar")
+nine_patch_stretch = true
+stretch_margin_left = 1
+stretch_margin_top = 1
+stretch_margin_right = 1
+stretch_margin_bottom = 1

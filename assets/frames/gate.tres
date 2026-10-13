@@ -1,0 +1,42 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://berpngpvrhvu8"]
+
+[ext_resource type="Texture2D" uid="uid://bn1kqubuyggs" path="res://assets/Gate/93.png" id="1_7hya5"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_poioi"]
+atlas = ExtResource("1_7hya5")
+region = Rect2(0, 0, 128, 128)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_poioi")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_poioi")
+}],
+"loop": 1,
+"name": &"locked",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_poioi")
+}],
+"loop": 1,
+"name": &"open",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_poioi")
+}],
+"loop": 0,
+"name": &"opening",
+"speed": 2.5
+}]

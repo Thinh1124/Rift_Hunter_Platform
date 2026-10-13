@@ -36,14 +36,17 @@ func enter_state(state_name: StringName) -> void:
 		STATE_PATROL:
 			play_anim(&"run")
 		WINDUP:
+			AudioManager.play_sfx(&"enemy_detect")
 			velocity.x = 0.0
 			_state_left = windup
 			_face_player()
 			play_anim(&"idle")
 		DASH:
+			AudioManager.play_sfx(&"enemy_attack")
 			_dash_direction = direction
 			play_anim(&"run")
 		STUNNED:
+			AudioManager.play_sfx(&"projectile_hit")
 			velocity.x = 0.0
 			_state_left = stun_time
 			play_anim(&"hit")

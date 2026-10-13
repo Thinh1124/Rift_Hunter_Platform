@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/objects/Projectile.tscn" id="1_base"]
+[ext_resource type="SpriteFrames" path="res://assets/frames/arrow_projectile_frames.tres" id="2_frames"]
+
+[node name="Arrow" instance=ExtResource("1_base")]
+launch_sfx = &"arrow"
+sprite_rotation = 0.7853982
+
+[node name="Sprite" parent="." index="0"]
+sprite_frames = ExtResource("2_frames")
+animation = &"fly"
+autoplay = "fly"

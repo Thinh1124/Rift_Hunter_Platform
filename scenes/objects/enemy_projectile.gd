@@ -8,6 +8,7 @@ var travel_direction: Vector2 = Vector2.RIGHT
 var ground_wave: bool = false
 var source: Enemy
 var _remaining: float
+var _impact_played: bool = false
 
 
 func _ready() -> void:
@@ -57,6 +58,7 @@ func _physics_process(delta: float) -> void:
 func _on_body(body: Node2D) -> void:
 	if body.is_in_group(&"enemy"):
 		return
+	_play_impact()
 	if body is Player:
 		var target := body as Player
 		if target.hurtbox != null:
@@ -67,6 +69,7 @@ func _on_body(body: Node2D) -> void:
 func _on_area(area: Area2D) -> void:
 	var receiver := area as HurtboxComponent
 	if receiver != null and receiver.get_parent().is_in_group(&"player"):
+		_play_impact()
 		receiver._on_area_entered(self)
 		_retire()
 
@@ -74,6 +77,13 @@ func _on_area(area: Area2D) -> void:
 func _retire() -> void:
 	set_active(false)
 	queue_free()
+
+
+func _play_impact() -> void:
+	if _impact_played:
+		return
+	_impact_played = true
+	AudioManager.play_sfx(&"projectile_hit")
 
 
 func _draw() -> void:

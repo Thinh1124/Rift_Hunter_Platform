@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://xeh1ffgb5p50"
+path="res://.godot/imported/39 - Boat.ogg-f9be8b0f0542867742306ea4dcc417eb.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/Musics/39 - Boat.ogg"
+dest_files=["res://.godot/imported/39 - Boat.ogg-f9be8b0f0542867742306ea4dcc417eb.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

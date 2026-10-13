@@ -12,16 +12,24 @@ extends HitboxComponent
 @export var life: float = 1.5
 ## 1 = sang phải, -1 = sang trái. Player set khi spawn.
 @export var direction: int = 1
+## Góc ảnh gốc; đổi dấu khi bắn trái để mũi đạn luôn hướng theo đường bay.
+@export var sprite_rotation: float = 0.0
+@export var launch_sfx: StringName = &"player_attack"
+@export var impact_sfx: StringName = &"projectile_hit"
 
-@onready var sprite: Sprite2D = get_node_or_null(^"Sprite") as Sprite2D
+@onready var sprite: AnimatedSprite2D = %Sprite
 
 var _life_left: float = 0.0
+var _impact_played: bool = false
 
 
 func _ready() -> void:
 	super()
 	_life_left = life
 	sprite.flip_h = direction < 0
+	sprite.rotation = sprite_rotation * float(direction)
+	sprite.play(&"fly")
+	AudioManager.play_sfx(launch_sfx)
 	body_entered.connect(_on_body_entered)
 	area_entered.connect(_on_area_entered)
 	var notifier := get_node_or_null(^"VisibleOnScreenNotifier2D") as VisibleOnScreenNotifier2D
@@ -38,12 +46,21 @@ func _physics_process(delta: float) -> void:
 
 ## mask = World(1) | Enemy(3): chạm tường hoặc quái là mất đạn.
 func _on_body_entered(_body: Node2D) -> void:
+	_play_impact()
 	queue_free()
 
 
 ## Enemy Hurtbox tự trừ máu qua HitboxComponent này, đạn chỉ tự hủy.
 func _on_area_entered(_area: Area2D) -> void:
+	_play_impact()
 	queue_free()
+
+
+func _play_impact() -> void:
+	if _impact_played:
+		return
+	_impact_played = true
+	AudioManager.play_sfx(impact_sfx)
 
 
 func _on_screen_exited() -> void:

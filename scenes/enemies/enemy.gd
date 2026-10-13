@@ -276,11 +276,13 @@ func enter_state(state_name: StringName) -> void:
 		STATE_PATROL:
 			play_anim(&"run")
 		STATE_DETECT:
+			AudioManager.play_sfx(&"enemy_detect")
 			_detect_left = detect_time
 			play_anim(&"idle")
 		STATE_CHASE:
 			play_anim(&"run")
 		STATE_ATTACK:
+			AudioManager.play_sfx(&"enemy_attack")
 			_attack_left = attack_delay
 			play_anim(&"idle")
 		STATE_HURT:
@@ -367,6 +369,7 @@ func _on_damaged(_amount: int, from_pos: Vector2) -> void:
 		return
 	_start_flash()
 	if health != null and health.is_alive():
+		AudioManager.play_sfx(&"enemy_hurt")
 		state_machine.change_state(STATE_HURT, {"from": from_pos})
 
 

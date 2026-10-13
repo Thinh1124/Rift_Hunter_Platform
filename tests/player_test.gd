@@ -6,7 +6,6 @@ const TILE: float = 16.0
 const GAP_LEFT: float = 300.0
 const GAP_RIGHT: float = 380.0
 const WALL_LEFT: float = 592.0   # mép trái của bức tường
-const PLAYER_R: float = 6.0      # bán kính capsule
 
 var player: Player
 var fails: int = 0
@@ -123,7 +122,8 @@ func test_coyote() -> void:
 ## Cham tuong roi nhay sat tuong -> khong bi dinh vao tuong.
 func test_wall() -> void:
 	await _place(Vector2(500, GROUND_Y))
-	var contact_x: float = WALL_LEFT - PLAYER_R
+	var body := player.body_shape.shape as CapsuleShape2D
+	var contact_x: float = WALL_LEFT - body.radius
 	Input.action_press(&"move_right")
 	for i in 120:
 		await get_tree().physics_frame

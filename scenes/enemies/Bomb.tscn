@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene format=3 uid="uid://c52sovfj8ok6e"]
 
 [ext_resource type="PackedScene" path="res://scenes/enemies/PatrolEnemy.tscn" id="1_patrol"]
 [ext_resource type="SpriteFrames" path="res://assets/frames/bomb_frames.tres" id="2_frames"]
@@ -16,24 +16,23 @@ size = Vector2(18, 24)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_stomp"]
 size = Vector2(20, 5)
 
-[node name="Bomb" node_paths=PackedStringArray("sprite") instance=ExtResource("1_patrol")]
-sprite = NodePath("AnimatedSprite2D")
+[node name="Bomb" unique_id=1960446842 node_paths=PackedStringArray("sprite") instance=ExtResource("1_patrol")]
+wall_check_distance = 10.0
+floor_check_distance = 20.0
 max_hp = 2
-speed = 26.0
-contact_damage = 1
 score_value = 150
-gravity = 900.0
 hurt_stun = 0.35
 knockback = 180.0
 knockback_lift = -140.0
-wall_check_distance = 10.0
-floor_check_distance = 20.0
+speed = 26.0
+sprite = NodePath("AnimatedSprite2D")
 
 [node name="AnimatedSprite2D" parent="." index="0"]
+position = Vector2(0, -6)
 scale = Vector2(1.5, 1.5)
 sprite_frames = ExtResource("2_frames")
 animation = &"idle"
-autoplay = true
+autoplay = "true"
 
 [node name="CollisionShape2D" parent="." index="1"]
 shape = SubResource("CapsuleShape2D_body")
@@ -49,3 +48,7 @@ position = Vector2(0, -14)
 
 [node name="CollisionShape2D" parent="StompZone" index="0"]
 shape = SubResource("RectangleShape2D_stomp")
+
+[node name="VisibleOnScreenNotifier2D" parent="." index="7"]
+position = Vector2(0, 5)
+rect = Rect2(-32, -32, 64, 50)

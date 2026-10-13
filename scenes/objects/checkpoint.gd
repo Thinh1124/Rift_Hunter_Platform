@@ -18,7 +18,7 @@ const ANIM_WAVING: StringName = &"on"
 ## res://assets/frames/checkpoint_on_frames.tres - cờ đang bay.
 @export var frames_waving: SpriteFrames
 ## Tên trong res://assets/audio/sfx/ (AudioManager nạp theo tên file).
-@export var sfx: StringName = &"pickup"
+@export var sfx: StringName = &"checkpoint"
 
 @onready var sprite: AnimatedSprite2D = $Sprite
 

@@ -1,8 +1,10 @@
-[gd_resource type="Resource" script_class="CharacterData" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="CharacterData" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/character_data.gd" id="1_script"]
 [ext_resource type="SpriteFrames" path="res://assets/frames/virtual_guy_frames.tres" id="2_frames"]
 [ext_resource type="Texture2D" path="res://assets/Main Characters/Virtual Guy/Idle (32x32).png" id="3_tex"]
+
+[ext_resource type="PackedScene" path="res://scenes/objects/EnergyBall.tscn" id="4_projectile"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_icon"]
 atlas = ExtResource("3_tex")
@@ -25,3 +27,4 @@ attack_cooldown_mult = 1.2
 ability_id = &""
 ability = "Them 2 tim, dan cham hon"
 unlocked_by_default = false
+projectile_scene = ExtResource("4_projectile")

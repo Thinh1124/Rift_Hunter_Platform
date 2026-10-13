@@ -1,25 +1,91 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=11 format=3 uid="uid://baelloeny3ybm"]
 
-[ext_resource type="PackedScene" path="res://scenes/enemies/Enemy.tscn" id="1_enemy"]
-[ext_resource type="Script" path="res://scenes/enemies/flying_enemy.gd" id="2_flying"]
-[ext_resource type="Script" path="res://scenes/enemies/states/enemy_state.gd" id="3_state"]
+[ext_resource type="Script" path="res://scenes/enemies/flying_enemy.gd" id="1_flying"]
+[ext_resource type="Script" path="res://components/health_component.gd" id="2_health"]
+[ext_resource type="Script" path="res://components/hurtbox_component.gd" id="3_hurtbox"]
+[ext_resource type="Script" path="res://components/hitbox_component.gd" id="4_hitbox"]
+[ext_resource type="Script" path="res://components/state_machine.gd" id="5_machine"]
+[ext_resource type="Script" path="res://scenes/enemies/states/flying_enemy_state.gd" id="6_state"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_detect"]
-radius = 120.0
+[sub_resource type="CapsuleShape2D" id="BodyShape"]
+radius = 6.0
+height = 16.0
 
-[node name="FlyingEnemy" instance=ExtResource("1_enemy")]
+[sub_resource type="RectangleShape2D" id="ContactShape"]
+size = Vector2(12, 16)
+
+[sub_resource type="RectangleShape2D" id="StompShape"]
+size = Vector2(14, 4)
+
+[sub_resource type="CircleShape2D" id="DetectShape"]
+resource_local_to_scene = true
+radius = 96.0
+
+[node name="FlyingEnemy" type="CharacterBody2D" groups=["enemy"]]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1_flying")
 has_gravity = false
-script = ExtResource("2_flying")
+turn_at_wall = false
+turn_at_ledge = false
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(2, 2)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("BodyShape")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2_health")
+max_health = 1
+
+[node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("health")]
+collision_layer = 4
+collision_mask = 8
+script = ExtResource("3_hurtbox")
+health = NodePath("../HealthComponent")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("ContactShape")
+
+[node name="ContactHitbox" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 2
+script = ExtResource("4_hitbox")
+damage = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ContactHitbox"]
+shape = SubResource("ContactShape")
+
+[node name="StompZone" type="Area2D" parent="."]
+position = Vector2(0, -10)
+collision_layer = 4
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StompZone"]
+shape = SubResource("StompShape")
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
+script = ExtResource("5_machine")
+initial_state = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="StateMachine"]
+script = ExtResource("6_state")
+
+[node name="Dead" type="Node" parent="StateMachine"]
+script = ExtResource("6_state")
+
+[node name="DetectPlayer" type="Node" parent="StateMachine"]
+script = ExtResource("6_state")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+rect = Rect2(-15, -23, 29, 41)
 
 [node name="DetectArea" type="Area2D" parent="."]
+unique_name_in_owner = true
 collision_layer = 0
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectArea"]
-shape = SubResource("CircleShape2D_detect")
-
-[node name="StateMachine" parent="." index="6"]
-initial_state = NodePath("Patrol")
-
-[node name="Return" type="Node" parent="StateMachine"]
-script = ExtResource("3_state")
+[node name="DetectShape" type="CollisionShape2D" parent="DetectArea"]
+unique_name_in_owner = true
+shape = SubResource("DetectShape")

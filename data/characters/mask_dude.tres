@@ -4,6 +4,8 @@
 [ext_resource type="SpriteFrames" uid="uid://busco0smlplt6" path="res://assets/frames/mask_dude_frames.tres" id="2_frames"]
 [ext_resource type="Texture2D" uid="uid://cmq3i1oxlcx67" path="res://assets/Main Characters/Mask Dude/Idle (32x32).png" id="3_tex"]
 
+[ext_resource type="PackedScene" path="res://scenes/objects/Arrow.tscn" id="4_projectile"]
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_icon"]
 atlas = ExtResource("3_tex")
 region = Rect2(0, 0, 32, 32)
@@ -25,3 +27,4 @@ attack_cooldown_mult = 0.8
 ability_id = &""
 ability = "Dap nhanh, chay 1.15x"
 unlocked_by_default = false
+projectile_scene = ExtResource("4_projectile")

@@ -1,9 +1,9 @@
-[gd_resource type="SpriteFrames" format=3]
+[gd_resource type="SpriteFrames" format=3 uid="uid://owms28j1g12e"]
 
-[ext_resource type="Texture2D" path="res://assets/Enemies/Demon_A/Demon_A_Death.png" id="1_gulav"]
-[ext_resource type="Texture2D" path="res://assets/Enemies/Demon_A/Demon_A_Hurt.png" id="2_jbkww"]
-[ext_resource type="Texture2D" path="res://assets/Enemies/Demon_A/Demon_A_Idle.png" id="3_i45bt"]
-[ext_resource type="Texture2D" path="res://assets/Enemies/Demon_A/Demon_A_Walk.png" id="4_vawnk"]
+[ext_resource type="Texture2D" uid="uid://duydcuujj7nnv" path="res://assets/Enemies/Demon_A/Demon_A_Death.png" id="1_gulav"]
+[ext_resource type="Texture2D" uid="uid://dpcnqh41aewgd" path="res://assets/Enemies/Demon_A/Demon_A_Hurt.png" id="2_jbkww"]
+[ext_resource type="Texture2D" uid="uid://bohblhyxq3ujj" path="res://assets/Enemies/Demon_A/Demon_A_Idle.png" id="3_i45bt"]
+[ext_resource type="Texture2D" uid="uid://bl6udi7tfbk62" path="res://assets/Enemies/Demon_A/Demon_A_Walk.png" id="4_vawnk"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2hbf5"]
 atlas = ExtResource("1_gulav")

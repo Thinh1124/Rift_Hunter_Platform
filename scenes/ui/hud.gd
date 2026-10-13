@@ -13,7 +13,7 @@ extends CanvasLayer
 @export_range(4, 10, 1) var score_digits: int = 6
 ## Thời gian đếm điểm tăng dần (giây).
 @export_range(0.05, 2.0, 0.05) var score_roll_time: float = 0.3
-## Cổng còn > 0 thì chỉ hiện "Cong x/y"; = 0 thì đổi sang dòng nhấp nháy báo mở cổng.
+## Đủ GameManager.SHARDS_REQUIRED shard mới báo mở cổng ra.
 @export var gates_open_text: String = "Exit open!"
 ## Chờ bao lâu sau boss chết mới ẩn thanh (giây).
 @export_range(0.0, 3.0, 0.05) var boss_hide_delay: float = 1.0
@@ -53,7 +53,6 @@ func _ready() -> void:
 	# mọi ải, cạnh một thanh vô hình.
 	boss_label.visible = false
 	boss_bar.texture_under = UIIcons.progress_background()
-	boss_bar.texture_progress = UIIcons.progress_fill()
 
 	# Pause chạy cả khi game pause (nút phải bấm được khi đang tạm dừng).
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -150,9 +149,9 @@ func _format_score(value: int) -> String:
 
 # --- Cổng -------------------------------------------------------------------
 
-## remaining == 0 -> chữ xanh + nhấp nháy "Mo cong thoat!".
+## Đủ shard -> chữ xanh + nhấp nháy thông báo cổng ra đã mở.
 func _on_gates_changed(remaining: int, total: int) -> void:
-	var done: bool = total > 0 and remaining <= 0
+	var done: bool = GameManager.shards_complete()
 	if done:
 		gates_label.text = gates_open_text
 		gates_label.add_theme_color_override(&"font_color", FLASH_COLOR)
@@ -179,9 +178,10 @@ func _stop_flash() -> void:
 
 # --- Mảnh Rift --------------------------------------------------------------
 
-## "3/10": đã thủ 3 trên tổng 10 mảnh cần để mở cánh cổng cuối màn.
+## Hiển thị số shard đã thu trên tổng số cần để mở cổng cuối màn.
 func _on_shards_changed(collected: int, required: int) -> void:
 	shard_label.text = "%d/%d" % [collected, required]
+	_on_gates_changed(GameManager.remaining_gates, GameManager.total_gates)
 
 
 # --- Boss -------------------------------------------------------------------

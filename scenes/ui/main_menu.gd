@@ -47,8 +47,7 @@ func _ready() -> void:
 
 	# play_music tự bỏ qua nếu stream đang phát, nên gọi lại mỗi lần vào menu
 	# không làm cắt nhạc đang chạy.
-	if menu_music != null:
-		AudioManager.play_music(menu_music)
+	AudioManager.play_music(menu_music if menu_music != null else AudioManager.music_from_file("20 - Good Time.ogg"))
 
 
 ## Vẽ animation idle của nhân vật đang chọn lên vùng preview bên phải.

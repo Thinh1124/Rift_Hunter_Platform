@@ -47,6 +47,7 @@ func _frames(count: int) -> void:
 
 
 func _run() -> void:
+	GameManager.shard_count = 0
 	var floor_body := StaticBody2D.new()
 	floor_body.position = Vector2(100, 240)
 	var floor_shape := CollisionShape2D.new()
@@ -60,7 +61,7 @@ func _run() -> void:
 	EventBus.gate_closed.connect(func(_id: StringName) -> void: _gate_closed += 1)
 	EventBus.request_shake.connect(func(strength: float, duration: float) -> void: _shakes.append(Vector2(strength, duration)))
 
-	# --- ExitGate chờ đủ cổng -------------------------------------------
+	# --- ExitGate bắt buộc đủ 5 shard ---------------------------------
 	var gate := preload("res://scenes/objects/ExitGate.tscn").instantiate() as ExitGate
 	gate.position = Vector2(200, 220)
 	add_child(gate)
@@ -93,10 +94,21 @@ func _run() -> void:
 	_check(_level_completed == 0, "Locked gate must not complete the level")
 	_check(gate.state == ExitGate.ExitState.LOCKED, "Touching a locked gate must not open it")
 
-	# Đóng hết cổng -> opening -> open.
+	# Đóng hết cổng không mở exit; chỉ shard thứ 10 mới kích hoạt.
 	EventBus.gates_changed.emit(0, 2)
+	EventBus.gates_changed.emit(0, 0)
+	await _frames(3)
+	_check(gate.state == ExitGate.ExitState.LOCKED, "Clearing all gates or having no gates must not bypass shards")
+	EventBus.shards_changed.emit(5, 5)
 	await _frames(2)
-	_check(gate.state == ExitGate.ExitState.OPENING, "Clearing all gates must start the opening animation")
+	_check(gate.state == ExitGate.ExitState.LOCKED, "A signal alone must not bypass the real shard count")
+	GameManager.add_shards(GameManager.SHARDS_REQUIRED - 1)
+	await _frames(3)
+	_check(gate.state == ExitGate.ExitState.LOCKED, "Four shards must keep the exit locked")
+	_check(not gate.glow.visible and _level_completed == 0, "Four shards must not activate or complete the exit")
+	GameManager.add_shards(1)
+	await _frames(2)
+	_check(gate.state == ExitGate.ExitState.OPENING, "The fifth shard must start the opening animation")
 	_check(gate.glow.visible, "Opening gate must switch its glow on")
 	_check(gate.sprite.animation == ExitGate.ANIM_OPENING, "Opening gate must play the opening animation")
 	await _frames(40)
@@ -118,25 +130,27 @@ func _run() -> void:
 	await _frames(8)
 	_check(_level_completed == 1, "Re-entering the open gate must not complete the level again")
 
-	# requires_all_gates = false -> mở ngay.
-	var free_gate := preload("res://scenes/objects/ExitGate.tscn").instantiate() as ExitGate
-	free_gate.position = Vector2(400, 220)
-	free_gate.requires_all_gates = false
-	add_child(free_gate)
+	# Already holding five shards when the scene enters the tree opens the gate.
+	var ready_gate := preload("res://scenes/objects/ExitGate.tscn").instantiate() as ExitGate
+	ready_gate.position = Vector2(400, 220)
+	add_child(ready_gate)
 	await _frames(3)
-	_check(free_gate.state == ExitGate.ExitState.OPENING, "requires_all_gates=false gate must unlock immediately")
+	_check(ready_gate.state == ExitGate.ExitState.OPENING, "A gate spawned with five shards must unlock")
 
-	# total = 0 (ải không có cổng quái) -> mở ngay.
+	GameManager.shard_count = 0
+	EventBus.shards_changed.emit(0, GameManager.SHARDS_REQUIRED)
+	await _frames(2)
+	_check(ready_gate.state == ExitGate.ExitState.LOCKED, "Resetting shards must deactivate an unfinished gate")
 	var empty_gate := preload("res://scenes/objects/ExitGate.tscn").instantiate() as ExitGate
 	empty_gate.position = Vector2(500, 220)
 	add_child(empty_gate)
 	await _frames(2)
-	_check(empty_gate.state == ExitGate.ExitState.LOCKED, "Gate with gates pending must stay locked")
 	EventBus.gates_changed.emit(0, 0)
+	empty_gate._unlock()
 	await _frames(3)
-	_check(empty_gate.state == ExitGate.ExitState.OPENING, "A level with total=0 gates must unlock immediately")
+	_check(empty_gate.state == ExitGate.ExitState.LOCKED, "An empty level must stay locked even if unlock is requested")
 
-	# --- BigGate: chỉ hoạt động sau boss ---------------------------------
+	# BigGate: existing boss gate behavior.
 	var big := preload("res://scenes/enemies/BigGate.tscn").instantiate() as BigGate
 	big.position = Vector2(200, 220)
 	add_child(big)
@@ -174,4 +188,6 @@ func _run() -> void:
 	_check(_shakes.size() >= 1 and _shakes[_shakes.size() - 1].x >= 5.0, "BigGate must shake the screen on close")
 	print("ExitGate/BigGate checks complete: %d failures" % failures)
 	_restore_save()
+	AudioManager.stop_sfx()
+	await get_tree().create_timer(0.1).timeout
 	get_tree().quit(0 if failures == 0 else 1)

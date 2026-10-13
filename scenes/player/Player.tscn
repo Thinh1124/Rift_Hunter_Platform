@@ -14,14 +14,15 @@
 [ext_resource type="PackedScene" path="res://scenes/objects/Projectile.tscn" id="12_projectile"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_body"]
-radius = 6.0
-height = 20.0
+radius = 4.8
+height = 16.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hurt"]
-radius = 5.0
-height = 18.0
+radius = 4.0
+height = 14.4
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
+texture_filter = 1
 z_index = 5
 collision_layer = 2
 collision_mask = 1
@@ -44,10 +45,11 @@ hurt_shape = NodePath("Hurtbox/CollisionShape2D")
 projectile_scene = ExtResource("12_projectile")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
-position = Vector2(0, -16)
+position = Vector2(0, -12.8)
+scale = Vector2(0.8, 0.8)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -10)
+position = Vector2(0, -8)
 shape = SubResource("CapsuleShape2D_body")
 
 [node name="Hurtbox" type="Area2D" parent="."]
@@ -57,7 +59,7 @@ script = ExtResource("3_hurtbox")
 health = NodePath("../HealthComponent")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
-position = Vector2(0, -9)
+position = Vector2(0, -7.2)
 shape = SubResource("CapsuleShape2D_hurt")
 
 [node name="HealthComponent" type="Node" parent="."]
@@ -65,7 +67,7 @@ script = ExtResource("2_health")
 max_health = 3
 
 [node name="ThrowPoint" type="Marker2D" parent="."]
-position = Vector2(10, -12)
+position = Vector2(8, -9.6)
 
 [node name="StateMachine" type="Node" parent="."]
 script = ExtResource("4_machine")

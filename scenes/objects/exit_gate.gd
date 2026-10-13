@@ -1,9 +1,6 @@
 class_name ExitGate
 extends Area2D
-## Cổng ra: khóa cho tới khi đóng hết cổng quái, rồi player chạm là hoàn thành ải.
-##
-## Locked -> EventBus.gates_changed(remaining <= 0 hoặc total == 0) -> Opening -> Open.
-##   total == 0 (ải không có MonsterGate nào) -> mở ngay.
+## Cổng ra: bắt buộc thu đủ GameManager.SHARDS_REQUIRED shard mới kích hoạt.
 ## Chạm khi đang Locked/Opening: bỏ qua. Open: phát level_completed đúng 1 lần.
 
 enum ExitState { LOCKED, OPENING, OPEN }
@@ -12,19 +9,19 @@ const ANIM_LOCKED: StringName = &"locked"
 const ANIM_OPENING: StringName = &"opening"
 const ANIM_OPEN: StringName = &"open"
 const GLOW_SIZE: int = 64
+const DEFAULT_FRAMES: SpriteFrames = preload("res://assets/frames/gate.tres")
 
 signal completed
 
-@export var requires_all_gates: bool = true
-## Cần đủ 3 anim locked/opening/open. Bỏ trống -> dựng hình cổng ra.
-@export var frames: SpriteFrames
+## Cần đủ 3 anim locked/opening/open. Bỏ trống -> dùng assets/Gate/93.png.
+@export var frames: SpriteFrames = DEFAULT_FRAMES
 ## Ánh sáng quanh cổng khi mở. Bỏ trống -> dựng vòng sáng vàng.
 @export var glow_texture: Texture2D
-@export var open_sfx: StringName = &"pickup"
+@export var open_sfx: StringName = &"gate_open"
 
-@onready var sprite: AnimatedSprite2D = $Sprite
-@onready var glow: Sprite2D = $Glow
-@onready var audio: AudioStreamPlayer2D = $AudioStreamPlayer2D
+@onready var sprite: AnimatedSprite2D = %Sprite
+@onready var glow: Sprite2D = %Glow
+@onready var audio: AudioStreamPlayer2D = %AudioStreamPlayer2D
 
 var state: ExitState = ExitState.LOCKED
 
@@ -41,39 +38,31 @@ func _process(delta: float) -> void:
 
 
 func _ready() -> void:
-	sprite.sprite_frames = frames if frames != null and frames.has_animation(ANIM_LOCKED) else _build_frames()
+	sprite.sprite_frames = frames if _has_gate_animations(frames) else DEFAULT_FRAMES
 	glow.texture = glow_texture if glow_texture != null else _make_glow_texture()
 	glow.visible = false
 	body_entered.connect(_on_body_entered)
 	sprite.animation_finished.connect(_on_animation_finished)
-	EventBus.gates_changed.connect(_on_gates_changed)
 	EventBus.shards_changed.connect(_on_shards_changed)
-	if not requires_all_gates:
-		_unlock()
-	elif GameManager.shards_complete():
+	if GameManager.shards_complete():
 		_unlock()
 	else:
 		_enter(ExitState.LOCKED)
 
 
-func _on_gates_changed(remaining: int, total: int) -> void:
-	if state != ExitState.LOCKED or not requires_all_gates:
-		return
-	if total <= 0 or remaining <= 0:
-		_unlock()
-
-
 ## Đủ mảnh Rift -> mở cánh cổng. Người chơi phải đánh quái gom đủ mảnh rồi
 ## mới chạm cổng mới qua được màn.
-func _on_shards_changed(collected: int, required: int) -> void:
-	if state != ExitState.LOCKED or not requires_all_gates:
+func _on_shards_changed(_collected: int, _required: int) -> void:
+	if _completed:
 		return
-	if required > 0 and collected >= required:
+	if GameManager.shards_complete():
 		_unlock()
+	elif state != ExitState.LOCKED:
+		_enter(ExitState.LOCKED)
 
 
 func _unlock() -> void:
-	if state != ExitState.LOCKED:
+	if state != ExitState.LOCKED or not GameManager.shards_complete():
 		return
 	_enter(ExitState.OPENING)
 	_play_open_sfx()
@@ -118,7 +107,7 @@ func _on_body_entered(body: Node2D) -> void:
 
 
 func _try_complete(body: Node2D) -> void:
-	if _completed or state != ExitState.OPEN or not body.is_in_group(&"player"):
+	if _completed or state != ExitState.OPEN or not GameManager.shards_complete() or not body.is_in_group(&"player"):
 		return
 	var player := body as Player
 	if player == null or player.health == null or not player.health.is_alive():
@@ -145,64 +134,11 @@ func _play_open_sfx() -> void:
 		AudioManager.play_sfx(open_sfx)
 
 
-# --- Hình dựng sẵn (thay bằng SpriteFrames thật qua @export frames) --------
+# --- SpriteFrames và ánh sáng -------------------------------------------
 
-func _build_frames() -> SpriteFrames:
-	var built := SpriteFrames.new()
-	built.remove_animation(&"default")
-	built.add_animation(ANIM_LOCKED)
-	built.set_animation_speed(ANIM_LOCKED, 6.0)
-	built.set_animation_loop(ANIM_LOCKED, true)
-	built.add_animation(ANIM_OPENING)
-	built.set_animation_speed(ANIM_OPENING, 10.0)
-	built.set_animation_loop(ANIM_OPENING, false)
-	built.add_animation(ANIM_OPEN)
-	built.set_animation_speed(ANIM_OPEN, 8.0)
-	built.set_animation_loop(ANIM_OPEN, true)
-	for i in 4:
-		built.add_frame(ANIM_LOCKED, _gate_texture(0.55))
-	for i in 4:
-		var t := float(i) / 4.0
-		built.add_frame(ANIM_OPENING, _gate_texture(lerpf(0.20, 0.90, t)))
-	for i in 4:
-		var pulse := float(i) / 4.0
-		built.add_frame(ANIM_OPEN, _gate_texture(0.86 + 0.04 * sin(pulse * TAU)))
-	return built
-
-
-## Khung 48x48 kiểu RIFT: hai cánh đá trái/phải ôm lấy một khe nứt dọc.
-## open_ratio 0 = cánh khép kín khe, 1 = cánh rút hết, khe nứt sáng lóa.
-func _gate_texture(open_ratio: float) -> ImageTexture:
-	var size := 48
-	var image := Image.create(size, size, false, Image.FORMAT_RGBA8)
-	image.fill(Color(0, 0, 0, 0))
-	var t := clampf(open_ratio, 0.0, 1.0)
-	var stone := Color(0.30, 0.26, 0.40).lerp(Color(0.55, 0.45, 0.75), t)
-	var stone_hi := stone.lightened(0.28)
-	var rift := Color(0.35, 0.80, 0.98).lerp(Color(0.85, 0.98, 1.0), t)
-
-	# Khoảng cách mép trong của hai cánh: 0 -> khép, 1 -> rút hẳn ra ngoài.
-	var inner := lerpf(21.0, 6.0, t)
-	var cx := float(size) * 0.5
-	var top := 5
-	var bottom := size - 3
-	for y in range(top, bottom):
-		for x in range(4, size - 4):
-			var p := Vector2(x + 0.5, y + 0.5)
-			var d_left := absf(p.x - cx)
-			# Mép trong hai cánh.
-			if d_left >= inner:
-				image.set_pixel(x, y, stone_hi if (x % 4) < 2 else stone)
-			# Khe nứt: sáng dần, chỉ hiện khi cánh đã rút.
-			elif t > 0.0:
-				var glow: float = (1.0 - d_left / maxf(inner, 1.0)) * 0.85 + 0.15
-				image.set_pixel(x, y, Color(rift.r, rift.g, rift.b, clampf(glow, 0.0, 1.0)))
-	# Vạch sáng chạy dọc mép khe -> cảm giác "rung" của rift.
-	for y in range(top, bottom, 3):
-		for x in range(int(cx - inner) + 1, int(cx - inner) + 2):
-			if x >= 4 and x < size - 4:
-				image.set_pixel(x, y, rift.lightened(0.4))
-	return ImageTexture.create_from_image(image)
+func _has_gate_animations(candidate: SpriteFrames) -> bool:
+	return candidate != null and candidate.has_animation(ANIM_LOCKED) \
+		and candidate.has_animation(ANIM_OPENING) and candidate.has_animation(ANIM_OPEN)
 
 
 func _make_glow_texture() -> ImageTexture:

@@ -57,7 +57,7 @@ func _run() -> void:
 	_check($HUD.score_label.text == "000123", "HUD score must roll to 000123")
 	# Lives KHÔNG còn hiển thị trên HUD (máu đã dùng hình tim), nên chỉ kiểm
 	# phần còn lại: điểm + mảnh Rift.
-	_check($HUD.shard_label.text == "0/10", "HUD phải hiện 0/10 mảnh Rift")
+	_check($HUD.shard_label.text == "0/%d" % GameManager.SHARDS_REQUIRED, "HUD phải hiện 0/5 mảnh Rift")
 	player.respawn()
 	_check(player.global_position == player_spawn.global_position, "Respawn must return to level checkpoint")
 	# Exercise the dedicated one-way tile with a body rising from beneath it.
