@@ -34,6 +34,8 @@ const FALLBACK_ANIMATION: StringName = &"idle"
 @export_range(-9, 9, 1) var max_hp_bonus: int = 0
 ## 1.0 = cooldown gốc (0.4s). < 1 bắn nhanh hơn.
 @export_range(0.25, 4.0, 0.05) var attack_cooldown_mult: float = 1.0
+## Dòng mô tả năng kỹ đặc, hiện ở CharacterSelect. Rỗng -> ẩn luôn dòng này.
+@export_multiline var ability: String = ""
 
 @export_group("Loadout")
 ## null = dùng Projectile mặc định gán trong Player.tscn.
@@ -91,7 +93,21 @@ func validated_sprite_frames() -> SpriteFrames:
 
 
 ## Dòng chữ tóm tắt cho UI.
+## XUỐNG 2 DÒNG: thẻ nhân vật rộng 150px, font NinjaAdventure rộng hơn font cũ -
+## gộp 1 dòng sẽ tràn ra ngoài thẻ.
 func stats_line() -> String:
-	return "SPD %.2f  |  JMP %.2f  |  HP +%d  |  CD %.2f" % [
+	return "SPD %.2f  JMP %.2f\nHP +%d  CD %.2f" % [
 		speed_mult, jump_mult, max_hp_bonus, attack_cooldown_mult,
 	]
+
+
+## Số tim cho chỉ số HP: gốc 3, cộng thẳng max_hp_bonus.
+func hp_stars() -> int:
+	return clampi(3 + max_hp_bonus, 1, 5)
+
+
+## Số kiếm cho chỉ số ATK: cooldown càng nhỏ (đánh càng nhanh) càng nhiều kiếm.
+## Gốc 1.0 -> 3 kiếm. Khoảng hiển thị 1..5.
+func atk_stars() -> int:
+	var cd: float = maxf(attack_cooldown_mult, 0.01)
+	return clampi(int(3.0 / cd), 1, 5)

@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://dmfo11dk3gyro"]
+
+[ext_resource type="Script" uid="uid://br08li3c2jity" path="res://scenes/objects/checkpoint.gd" id="1_script"]
+[ext_resource type="SpriteFrames" uid="uid://dfqajbkjpuhm8" path="res://assets/frames/checkpoint_off_frames.tres" id="2_locked"]
+[ext_resource type="SpriteFrames" uid="uid://d4jltfd1jkt52" path="res://assets/frames/checkpoint_on_frames.tres" id="3_waving"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_checkpoint"]
+resource_local_to_scene = true
+size = Vector2(28, 56)
+
+[node name="Checkpoint" type="Area2D" unique_id=1953096487]
+collision_layer = 64
+collision_mask = 2
+script = ExtResource("1_script")
+frames_locked = ExtResource("2_locked")
+frames_waving = ExtResource("3_waving")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=527125345]
+sprite_frames = ExtResource("2_locked")
+animation = &"off"
+offset = Vector2(0, -32)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=685495286]
+position = Vector2(0, -28)
+shape = SubResource("RectangleShape2D_checkpoint")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=1088962183]
+rect = Rect2(-32, -64, 64, 64)

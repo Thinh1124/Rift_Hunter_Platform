@@ -6,6 +6,10 @@ const CROSSFADE_TIME: float = 0.5
 const SFX_VOICE_COUNT: int = 8
 const SILENT_DB: float = -80.0
 const AUDIO_EXTENSIONS: PackedStringArray = ["ogg", "wav", "mp3"]
+## Thời gian hạ/ngẩng nhạc khi pause (giây).
+const DUCK_FADE_TIME: float = 0.15
+## Nhạc còn bao nhiêu phần khi pause.
+const PAUSE_DUCK: float = 0.5
 
 var _sfx: Dictionary[StringName, AudioStream] = {}
 var _sfx_voices: Array[AudioStreamPlayer] = []
@@ -17,6 +21,8 @@ var _music_tween: Tween
 
 var _music_volume: float = 0.8
 var _sfx_volume: float = 1.0
+## Nhân thêm vào âm lượng nhạc. 0.5 = hạ nhạc còn một nửa khi game pause.
+var _music_duck: float = 1.0
 
 
 func _ready() -> void:
@@ -31,6 +37,15 @@ func _ready() -> void:
 		add_child(voice)
 		_sfx_voices.append(voice)
 	_scan_sfx()
+
+
+## Nạp volume đã lưu. Gọi từ GameManager._ready vì AudioManager đứng TRƯỚC
+## SaveManager trong autoload -> lúc _ready của AudioManager, save chưa nạp.
+func apply_saved_volumes() -> void:
+	if "music_vol" in SaveManager:
+		_music_volume = clampf(float(SaveManager.get(&"music_vol")), 0.0, 1.0)
+	if "sfx_vol" in SaveManager:
+		_sfx_volume = clampf(float(SaveManager.get(&"sfx_vol")), 0.0, 1.0)
 
 
 func _make_music_player(node_name: StringName) -> AudioStreamPlayer:
@@ -73,7 +88,7 @@ func play_music(stream: AudioStream) -> void:
 	incoming.play()
 	_music_tween = create_tween().set_parallel(true)
 	_music_tween.tween_property(outgoing, "volume_db", SILENT_DB, CROSSFADE_TIME)
-	_music_tween.tween_property(incoming, "volume_db", _to_db(_music_volume), CROSSFADE_TIME)
+	_music_tween.tween_property(incoming, "volume_db", _to_db(_music_volume * _music_duck), CROSSFADE_TIME)
 	_music_tween.chain().tween_callback(outgoing.stop)
 	_music_active = incoming
 
@@ -89,7 +104,25 @@ func stop_music() -> void:
 func set_music_volume(v: float) -> void:
 	_music_volume = clampf(v, 0.0, 1.0)
 	if _music_active != null and _music_active.playing:
-		_music_active.volume_db = _to_db(_music_volume)
+		_music_active.volume_db = _to_db(_music_volume * _music_duck)
+
+
+## Âm lượng nhạc đang dùng (0-1) - Settings đọc để hiện lại giá trị hiện tại.
+func get_music_volume() -> float:
+	return _music_volume
+
+
+## Hạ nhạc còn factor (0.5 = còn nửa) khi pause. Chỉ đổi nhạc, SFX giữ nguyên.
+func set_music_duck(factor: float) -> void:
+	_music_duck = clampf(factor, 0.0, 1.0)
+	if _music_active != null and _music_active.playing:
+		# Tween ngắn để không bị giật khi bật/tắt pause.
+		var tween := create_tween()
+		tween.tween_property(_music_active, "volume_db", _to_db(_music_volume * _music_duck), DUCK_FADE_TIME)
+
+
+func unduck_music() -> void:
+	set_music_duck(1.0)
 
 
 # --- SFX -------------------------------------------------------------------
@@ -107,6 +140,11 @@ func play_sfx(sfx_name: StringName) -> void:
 
 func set_sfx_volume(v: float) -> void:
 	_sfx_volume = clampf(v, 0.0, 1.0)
+
+
+## Âm lượng SFX đang dùng (0-1) - Settings đọc để hiện lại giá trị hiện tại.
+func get_sfx_volume() -> float:
+	return _sfx_volume
 
 
 func has_sfx(sfx_name: StringName) -> bool:

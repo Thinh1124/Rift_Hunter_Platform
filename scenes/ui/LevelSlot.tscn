@@ -1,0 +1,78 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/level_slot.gd" id="1_slot"]
+
+[node name="LevelSlot" type="Button"]
+custom_minimum_size = Vector2(160, 112)
+focus_mode = 0
+script = ExtResource("1_slot")
+
+[node name="Box" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="Box"]
+unique_name_in_owner = true
+texture_filter = 1
+custom_minimum_size = Vector2(57, 51)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Number" type="Label" parent="Box"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "1"
+horizontal_alignment = 1
+
+[node name="Stars" type="HBoxContainer" parent="Box"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Star0" type="TextureRect" parent="Box/Stars"]
+texture_filter = 1
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Star1" type="TextureRect" parent="Box/Stars"]
+texture_filter = 1
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Star2" type="TextureRect" parent="Box/Stars"]
+texture_filter = 1
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Badge" type="TextureRect" parent="Box"]
+unique_name_in_owner = true
+visible = false
+texture_filter = 1
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5

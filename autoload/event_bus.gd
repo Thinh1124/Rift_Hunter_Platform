@@ -12,5 +12,6 @@ signal game_over
 signal boss_hp_changed(cur: int, max: int)
 signal boss_defeated
 signal checkpoint_reached(pos: Vector2)
-signal fruit_collected(total: int)
+## Số mảnh Rift đã thu / số cần thu trong màn. Đủ -> cổng cuối màn mở cánh.
+signal shards_changed(collected: int, required: int)
 signal request_shake(strength: float, duration: float)

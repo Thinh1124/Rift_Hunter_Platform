@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3]
+[ext_resource type="PackedScene" path="res://scenes/levels/LevelBase.tscn" id="1_level"]
+[ext_resource type="Script" path="res://tests/level_base_test.gd" id="2_test"]
+[ext_resource type="Script" path="res://tests/level_base_test_gate.gd" id="3_gate"]
+[sub_resource type="AudioStreamGenerator" id="music"]
+
+[node name="LevelBaseTest" instance=ExtResource("1_level")]
+script = ExtResource("2_test")
+level_number = 3
+limit_left = 64
+limit_right = 1344
+limit_top = 32
+limit_bottom = 752
+season = "autumn"
+music = SubResource("music")
+
+[node name="PlayerSpawn" parent="." index="4"]
+position = Vector2(240, 300)
+
+[node name="Gate" type="Node2D" parent="Objects" groups=["gate"]]
+script = ExtResource("3_gate")
+
+[node name="BigGate" type="Node2D" parent="Objects" groups=["gate"]]
+script = ExtResource("3_gate")
+is_boss_gate = true

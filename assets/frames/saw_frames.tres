@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=10 format=3]
+[gd_resource type="SpriteFrames" format=3 uid="uid://dbxv8fxosx0x6"]
 
 [ext_resource type="Texture2D" uid="uid://bu34j36myhcfr" path="res://assets/Traps/Saw/On (38x38).png" id="1_tex"]
 
@@ -35,7 +35,8 @@ atlas = ExtResource("1_tex")
 region = Rect2(266, 0, 38, 38)
 
 [resource]
-animations = [{"frames": [{
+animations = [{
+"frames": [{
 "duration": 1.0,
 "texture": SubResource("atlas_1")
 }, {
@@ -59,4 +60,8 @@ animations = [{"frames": [{
 }, {
 "duration": 1.0,
 "texture": SubResource("atlas_8")
-}], "loop": true, "name": &"spin", "speed": 18.0}]
+}],
+"loop": 1,
+"name": &"spin",
+"speed": 18.0
+}]

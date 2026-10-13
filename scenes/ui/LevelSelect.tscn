@@ -1,0 +1,86 @@
+[gd_scene format=3 uid="uid://dvd810022lwgj"]
+
+[ext_resource type="Script" uid="uid://tcpk64han1to" path="res://scenes/ui/level_select.gd" id="1_select"]
+[ext_resource type="Script" uid="uid://br8bmxjswp3ha" path="res://scenes/ui/ui_button.gd" id="2_button"]
+[ext_resource type="Script" uid="uid://ove8hb71ugsp" path="res://scenes/ui/safe_area_margin.gd" id="3_safe"]
+[ext_resource type="Script" uid="uid://b5s4u2j2id16h" path="res://scenes/ui/parallax_texture.gd" id="4_parallax"]
+[ext_resource type="Texture2D" uid="uid://cdtha6ypiapy1" path="res://assets/Background/Purple.png" id="5_bg"]
+
+[node name="LevelSelect" type="Control" unique_id=1529088299]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_select")
+
+[node name="Background" type="TextureRect" parent="." unique_id=2130606352]
+unique_name_in_owner = true
+modulate = Color(0.32, 0.3, 0.45, 1)
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_bg")
+script = ExtResource("4_parallax")
+speed = 6.0
+
+[node name="Shade" type="ColorRect" parent="." unique_id=1216842630]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.05, 0.07, 0.12, 0.7)
+
+[node name="SafeArea" type="MarginContainer" parent="." unique_id=178165475]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("3_safe")
+
+[node name="Layout" type="VBoxContainer" parent="SafeArea" unique_id=1184186769]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Header" type="HBoxContainer" parent="SafeArea/Layout" unique_id=982312006]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BackButton" type="Button" parent="SafeArea/Layout/Header" unique_id=541697769]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 48)
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+theme_override_font_sizes/font_size = 12
+text = "BACK"
+script = ExtResource("2_button")
+
+[node name="Title" type="Label" parent="SafeArea/Layout/Header" unique_id=769179910]
+layout_mode = 2
+size_flags_horizontal = 3
+; Nằm trên nền tối (ngoài panel) -> kế thừa màu kem của theme, KHÔNG dùng
+; type "Title" (nâu đậm, chỉ dùng khi nằm trong panel gỗ).
+theme_override_font_sizes/font_size = 20
+text = "LEVELS"
+horizontal_alignment = 1
+
+[node name="Grid" type="GridContainer" parent="SafeArea/Layout" unique_id=1393849820]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 3

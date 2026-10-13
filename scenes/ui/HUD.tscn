@@ -1,0 +1,141 @@
+[gd_scene load_steps=6 format=3 uid="uid://ckeg4xiqpaljj"]
+
+[ext_resource type="Script" uid="uid://dmr66oai523tb" path="res://scenes/ui/hud.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://ove8hb71ugsp" path="res://scenes/ui/safe_area_margin.gd" id="2_safe"]
+[ext_resource type="PackedScene" path="res://scenes/ui/PipRow.tscn" id="3_piprow"]
+[ext_resource type="Texture2D" path="res://assets/Menu/Buttons/Settings.png" id="4_pause"]
+[ext_resource type="Texture2D" path="res://assets/Items/Checkpoints/End/End (Idle).png" id="5_gate"]
+
+[node name="HUD" type="CanvasLayer"]
+layer = 5
+script = ExtResource("1_script")
+
+[node name="SafeArea" type="MarginContainer" parent="."]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_safe")
+
+[node name="Rows" type="VBoxContainer" parent="SafeArea"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="TopBar" type="HBoxContainer" parent="SafeArea/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="Left" type="HBoxContainer" parent="SafeArea/Rows/TopBar"]
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="HeartsBox" parent="SafeArea/Rows/TopBar/Left" instance=ExtResource("3_piprow")]
+layout_mode = 2
+size_flags_vertical = 4
+unique_name_in_owner = true
+pip_size = 14
+separation = 1
+
+[node name="Center" type="HBoxContainer" parent="SafeArea/Rows/TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="SafeArea/Rows/TopBar/Center"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+text = "000000"
+vertical_alignment = 1
+
+[node name="GatesBox" type="HBoxContainer" parent="SafeArea/Rows/TopBar/Center"]
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_constants/separation = 3
+
+[node name="GatesIcon" type="TextureRect" parent="SafeArea/Rows/TopBar/Center/GatesBox"]
+unique_name_in_owner = true
+texture_filter = 1
+custom_minimum_size = Vector2(14, 14)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("5_gate")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GatesLabel" type="Label" parent="SafeArea/Rows/TopBar/Center/GatesBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+text = "Gates 0/0"
+vertical_alignment = 1
+
+[node name="ShardBox" type="HBoxContainer" parent="SafeArea/Rows/TopBar/Center"]
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_constants/separation = 3
+
+[node name="ShardIcon" type="TextureRect" parent="SafeArea/Rows/TopBar/Center/ShardBox"]
+unique_name_in_owner = true
+texture_filter = 1
+custom_minimum_size = Vector2(14, 14)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ShardLabel" type="Label" parent="SafeArea/Rows/TopBar/Center/ShardBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+text = "0/10"
+vertical_alignment = 1
+
+[node name="PauseButton" type="Button" parent="SafeArea/Rows/TopBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Pause"
+icon = ExtResource("4_pause")
+expand_icon = true
+
+[node name="BossRow" type="HBoxContainer" parent="SafeArea/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="BossLabel" type="Label" parent="SafeArea/Rows/BossRow"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 0.4, 0.65, 1)
+theme_override_font_sizes/font_size = 10
+text = "BOSS"
+vertical_alignment = 1
+
+[node name="BossBar" type="TextureProgressBar" parent="SafeArea/Rows/BossRow"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(300, 10)
+layout_mode = 2
+size_flags_horizontal = 4
+value = 100.0

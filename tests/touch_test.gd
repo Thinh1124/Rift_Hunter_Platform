@@ -75,24 +75,44 @@ func _test_visibility() -> void:
 # --- 2. Bố cục -------------------------------------------------------------
 
 func _test_layout() -> void:
-	print("--- 2. bo cuc (viewport 640x360) ---")
+	print("--- 2. bo cuc ---")
 	var vp: Vector2 = get_viewport().get_visible_rect().size
+	# TouchControls nạp button_scale từ SaveManager (slider "Cỡ nút ảo"), còn
+	# _test_visibility() gọi lại _ready() nên phải ghim lại 1.0 cho đo được.
+	touch.button_scale = 1.0
+	touch._layout()
+	# Kỳ vọng tính TỪ viewport đang chạy, không hardcode 640x360: chạy headless
+	# viewport là 640x640 nên toạ độ Y khác hẳn bản chạy cửa sổ.
+	print("viewport = ", vp)
 	var left: TouchScreenButton = _buttons[&"move_left"]
 	var right: TouchScreenButton = _buttons[&"move_right"]
 	var jump: TouchScreenButton = _buttons[&"jump"]
 	var attack: TouchScreenButton = _buttons[&"attack"]
 	var interact: TouchScreenButton = _buttons[&"interact"]
 
-	# Safe area tren desktop = 0 nen lech = edge_margin 24
-	_check("Left tai (24, 280)", _eq(left.position, Vector2(24, 280)), str(left.position))
-	_check("Right tai (96, 280) - cach 72px", _eq(right.position, Vector2(96, 280)), str(right.position))
-	_check("Jump tai (552, 272)", _eq(jump.position, Vector2(552, 272)), str(jump.position))
-	_check("Attack tai (480, 276)", _eq(attack.position, Vector2(480, 276)), str(attack.position))
-	_check("Interact tai (484, 212)", _eq(interact.position, Vector2(484, 212)), str(interact.position))
-	_check("canh le duoi 24px", _eqf(vp.y - (left.position.y + 56.0), 24.0))
-	_check("canh le phai 24px", _eqf(vp.x - (jump.position.x + 64.0), 24.0))
-	_check("Interact tren Attack 16px",
-		_eqf(attack.position.y - (interact.position.y + 48.0), 16.0))
+	# Safe area tren desktop = 0 nen lech = edge_margin 24, gap = 16
+	var edge: float = touch.edge_margin
+	var gap: float = touch.button_gap
+	var bottom: float = vp.y - edge
+	var exp_left := Vector2(edge, bottom - 56.0)
+	var exp_right := Vector2(edge + 56.0 + gap, bottom - 56.0)
+	var exp_jump := Vector2(vp.x - edge - 64.0, bottom - 64.0)
+	var exp_attack := Vector2(exp_jump.x - gap - 56.0, exp_jump.y + (64.0 - 56.0) * 0.5)
+	var exp_interact := Vector2(exp_attack.x + (56.0 - 48.0) * 0.5, exp_attack.y - gap - 48.0)
+
+	for pair: Array in [
+		["Left", left.position, exp_left],
+		["Right", right.position, exp_right],
+		["Jump", jump.position, exp_jump],
+		["Attack", attack.position, exp_attack],
+		["Interact", interact.position, exp_interact],
+	]:
+		_check("%s tai %s" % [pair[0], pair[2]], _eq(pair[1], pair[2]), str(pair[1]))
+
+	_check("canh le duoi %.0fpx" % edge, _eqf(vp.y - (left.position.y + 56.0), edge))
+	_check("canh le phai %.0fpx" % edge, _eqf(vp.x - (jump.position.x + 64.0), edge))
+	_check("Interact tren Attack %.0fpx" % gap,
+		_eqf(attack.position.y - (interact.position.y + 48.0), gap))
 
 
 # --- 3. Action binding -----------------------------------------------------

@@ -1,0 +1,47 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/enemies/MonsterGate.tscn" id="1_gate"]
+[ext_resource type="Script" path="res://scenes/enemies/big_gate.gd" id="2_script"]
+
+[sub_resource type="Gradient" id="Gradient_burst"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 0.95, 0.75, 1, 0.8, 0.4, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_burst"]
+gradient = SubResource("Gradient_burst")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+width = 32
+height = 32
+
+[node name="BigGate" instance=ExtResource("1_gate")]
+scale = Vector2(2, 2)
+script = ExtResource("2_script")
+gate_id = &"big_gate"
+spawn_scene = null
+close_time = 3.0
+is_boss_gate = true
+start_active = false
+
+[node name="Burst" type="CPUParticles2D" parent="."]
+position = Vector2(0, -8)
+z_index = 4
+emitting = false
+amount = 36
+lifetime = 0.9
+one_shot = true
+explosiveness = 1.0
+spread = 180.0
+gravity = Vector2(0, 40)
+initial_velocity_min = 90.0
+initial_velocity_max = 220.0
+scale_amount_min = 1.5
+scale_amount_max = 3.5
+color_ramp = SubResource("GradientTexture2D_burst")
+
+[node name="BurstGlow" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(0, -8)
+z_index = -1
+scale = Vector2(2, 2)

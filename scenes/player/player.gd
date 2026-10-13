@@ -82,6 +82,9 @@ const BASE_BUFFER: float = 0.1
 @export_range(0.0, 5.0, 0.05) var iframe_time: float = 1.2
 ## Nhịp nhấp nháy sprite khi đang bất tử tạm thời (Hz).
 @export_range(2.0, 30.0, 1.0) var blink_hz: float = 10.0
+## Rung tay khi trúng đòn (ms). 0 = không rung. Chỉ rung nếu SaveManager.vibration
+## đang bật (CheckButton "Rung" trong Settings).
+@export_range(0.0, 1000.0, 10.0) var hit_vibration_ms: float = 120.0
 
 @export_group("Camera")
 @export var look_ahead: float = 24.0
@@ -161,8 +164,12 @@ func _ready() -> void:
 	else:
 		apply_exports()
 
+	# Sprite có thể vừa được đổi sang nhân vật khác -> áp lại hướng nhìn.
+	_apply_facing()
+
 	if hurtbox != null and health != null:
 		hurtbox.health = health
+		hurtbox.hit_received.connect(_on_hit_received)
 	if camera != null:
 		camera.limit_left = limit_left
 		camera.limit_top = limit_top
@@ -230,6 +237,7 @@ func apply_character(data: CharacterData) -> void:
 		if frames != null:
 			sprite.sprite_frames = frames
 		sprite.position = data.sprite_offset
+		_play_spawn_animation()
 	_apply_body_size(data.collision_size)
 	_apply_derived()
 
@@ -259,6 +267,11 @@ func _apply_body_size(size: Vector2) -> void:
 func _apply_derived() -> void:
 	if health != null:
 		health.max_health = _max_hp
+		# HealthComponent._ready() chạy TRƯỚC Player._ready (con trước cha) nên
+		# nó nạp current = max_health GỐC (3) vào lúc đó. apply_character() mới
+		# đổi max_health theo nhân vật -> nếu không nạp lại thì vào màn xong
+		# nhân vật có 5 máu lại chỉ còn 3 (HUD hiện 3/5 tim).
+		health.reset()
 	if coyote_timer != null:
 		coyote_timer.wait_time = _coyote_time
 	if jump_buffer_timer != null:
@@ -304,6 +317,16 @@ func _read_direction() -> void:
 	input_dir = Input.get_axis(&"move_left", &"move_right")
 	if absf(input_dir) > 0.2:
 		facing = 1 if input_dir > 0.0 else -1
+		_apply_facing()
+
+
+## Đổi hướng nhìn của sprite theo `facing`.
+##
+## Sprite vẽ sẵn nhìn sang PHẢI (giống Enemy/NPC), nên quay trái chỉ cần
+## flip_h. Không có hàm này thì nhân vật luôn nhìn phải kể cả khi chạy trái.
+func _apply_facing() -> void:
+	if sprite != null:
+		sprite.flip_h = facing < 0
 
 
 func _apply_gravity(delta: float) -> void:
@@ -340,6 +363,8 @@ func _update_look_ahead(delta: float) -> void:
 	var target: float = dir * look_ahead
 	var weight: float = 1.0 - exp(-look_ahead_speed * delta)
 	camera.position.x = lerpf(camera.position.x, target, weight)
+	# Làm tròn: lerp ra số lẻ sẽ đẩy camera lệch nửa pixel -> tile nhòe/nhiễu.
+	camera.position.x = roundf(camera.position.x)
 
 
 ## ThrowPoint bám theo hướng nhìn (lệch throw_offset px).
@@ -379,14 +404,6 @@ func _update_blink(delta: float) -> void:
 
 
 # --- Hàm công khai cho GameManager / Pickup --------------------------------
-
-## Tim: hồi máu, trả về số HP thực sự hồi được (0 = đã đầy hoặc đã chết).
-func heal(amount: int) -> int:
-	if health == null or not health.is_alive():
-		return 0
-	var before: int = health.current
-	health.heal(amount)
-	return health.current - before
 
 
 ## Khiên: bất tử + viền sáng trong `duration` giây (mặc định lấy shield_duration).
@@ -433,6 +450,7 @@ func respawn() -> void:
 	global_position = respawn_position()
 	velocity = Vector2.ZERO
 	facing = 1
+	_apply_facing()
 	shield_active = false
 	_shield_left = 0.0
 	_blink_time = 0.0
@@ -605,6 +623,27 @@ func play_animation(anim: StringName) -> void:
 	sprite.play(anim)
 
 
+## Vừa gán sprite_frames, AnimatedSprite2D tự chọn animation ĐẦU TIÊN trong danh
+## sách. Các nhân vật hiện tại liệt kê theo thứ tự alphabet, nên animation đầu là
+## "dead"/"hit" -> lúc màn vừa mở nhân vật đứng đúng pose chết cho tới frame sau.
+## Phát "appear" nếu SpriteFrames có; hết clip thì về idle. Không có -> idle luôn.
+func _play_spawn_animation() -> void:
+	if sprite == null:
+		return
+	if sprite.sprite_frames != null and sprite.sprite_frames.has_animation(&"appear"):
+		play_animation(&"appear")
+		# appear là clip một lần: hết clip -> idle. CONNECT_ONE_SHOT nên tự rút.
+		var on_done := Callable(self, "_on_spawn_animation_finished")
+		if not sprite.animation_finished.is_connected(on_done):
+			sprite.animation_finished.connect(on_done, CONNECT_ONE_SHOT)
+		return
+	play_animation(&"idle")
+
+
+func _on_spawn_animation_finished() -> void:
+	play_animation(&"idle")
+
+
 func set_control_enabled(value: bool) -> void:
 	control_enabled = value
 	if not value:
@@ -626,12 +665,30 @@ func _on_damaged(amount: int, from_pos: Vector2) -> void:
 	EventBus.request_shake.emit(3.0, 0.15)
 	_start_iframe()
 	AudioManager.play_sfx(&"player_hurt")
+	_vibrate_hit()
 	if current_state() == STATE_DEAD or current_state() == STATE_HIT:
 		return
 	state_machine.change_state(STATE_HIT, {"from": from_pos})
+
+
+## Rung tay khi trúng đòn. Settings tắt rung -> SaveManager.vibration = false ->
+## bỏ qua. Trên desktop Input.vibrate_handheld() là no-op nên không lỗi.
+func _vibrate_hit() -> void:
+	if hit_vibration_ms <= 0.0 or not SaveManager.vibration:
+		return
+	Input.vibrate_handheld(int(hit_vibration_ms))
 
 
 func _on_died() -> void:
 	if current_state() != STATE_DEAD:
 		state_machine.change_state(STATE_DEAD)
 	died.emit()
+
+
+func _on_hit_received(hitbox: HitboxComponent) -> void:
+	if not hitbox.apply_knockback or health == null or not health.is_alive():
+		return
+	var away := signf(global_position.x - hitbox.global_position.x)
+	if is_zero_approx(away):
+		away = float(facing)
+	velocity = Vector2(away * absf(hitbox.knockback.x), hitbox.knockback.y)

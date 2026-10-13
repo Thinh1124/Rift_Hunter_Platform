@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Space Bunny - Rift Hunter"
-run/main_scene="res://scenes/main.tscn"
+run/main_scene="res://scenes/ui/Boot.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -22,6 +22,7 @@ AudioManager="*res://autoload/audio_manager.gd"
 SaveManager="*res://autoload/save_manager.gd"
 GameManager="*res://autoload/game_manager.gd"
 _mcp_game_helper="*res://addons/godot_ai/runtime/game_helper.gd"
+SceneTransition="*res://autoload/scene_transition.gd"
 
 [display]
 
@@ -35,6 +36,14 @@ window/stretch/aspect="expand"
 [dotnet]
 
 project/assembly_name="Space Bunny - Rift Hunter"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/godot_ai/plugin.cfg")
+
+[gui]
+
+theme/custom="res://addons/pixel_ui/themes/wood.tres"
 
 [input]
 

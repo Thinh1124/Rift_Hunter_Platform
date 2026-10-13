@@ -1,7 +1,7 @@
 extends Node
-## Điều phối vòng chơi: nhân vật đã chọn, điểm, mạng, cổng, trái cây, chuyển màn.
+## Điều phối vòng chơi: nhân vật đã chọn, điểm, mạng, mảnh rift, cổng, chuyển màn.
 ## BẢNG THƯỞNG/PHẠT nằm ở đây (Player chỉ cung cấp hàm: heal/add_shield/respawn):
-##   Trái cây      -> +100 điểm, fruit_count+1; đủ 50 quả -> +1 mạng
+##   Mảnh Rift    -> +50 điểm, shard_count+1; đủ SHARDS_REQUIRED -> mở cổng ra
 ##   Tim           -> +1 HP (tối đa max_hp)
 ##   Khiên         -> add_shield(8)
 ##   Hạ quái       -> +200 điểm (boss +2000)
@@ -10,10 +10,13 @@ extends Node
 ##   Hoàn thành ải -> 3 sao HP đầy / 2 sao HP>=2 / 1 sao còn lại
 
 const LEVEL_COUNT: int = 6
+## Ải hướng dẫn, chỉ chạy lần đầu (SaveManager.tutorial_completed).
+const TUTORIAL_LEVEL: int = 0
 const BOSS_LEVEL: int = 6
 const START_LIVES: int = 3
-const FRUIT_PER_LIFE: int = 50
-const FRUIT_SCORE: int = 100
+## Số mảnh Rift cần thu trong một màn để mở cánh cổng ra.
+const SHARDS_REQUIRED: int = 10
+const SHARD_SCORE: int = 50
 const ENEMY_KILL_SCORE: int = 200
 const BOSS_KILL_SCORE: int = 2000
 const SHIELD_DURATION: float = 8.0
@@ -23,7 +26,7 @@ const SILENT_DB: float = -80.0
 
 @export_range(1, 6, 1) var default_level: int = 1
 @export var main_menu_scene: String = "res://scenes/ui/MainMenu.tscn"
-@export_range(0.0, 2.0, 0.05) var fade_time: float = 0.3
+## Fade do SceneTransition lo (xem autoload/scene_transition.gd).
 
 ## Nhân vật đang chơi. Nạp từ res://data/characters/default.tres nếu file tồn tại.
 var selected_character: CharacterData
@@ -31,26 +34,30 @@ var score: int = 0
 var lives: int = START_LIVES
 var total_gates: int = 0
 var remaining_gates: int = 0
-var fruit_count: int = 0
+## Số mảnh Rift đã thu trong màn hiện tại (reset mỗi lần vào màn).
+var shard_count: int = 0
 var current_level: int = 1
 var last_checkpoint: Vector2 = Vector2.ZERO
+## Số lần chết trong ải hiện tại (NPC dùng để đổi thoại sang "hint").
+var deaths_this_level: int = 0
 ## Số sao của màn vừa hoàn thành (lưu vào SaveManager).
 var last_stars: int = 0
 
-var _fade_layer: CanvasLayer
-var _fade_rect: ColorRect
-var _changing_scene: bool = false
+
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	selected_character = _load_default_character()
+	# GameManager đứng sau SaveManager trong autoload -> lúc này save đã nạp xong,
+	# mới áp được volume đã lưu cho AudioManager.
+	AudioManager.apply_saved_volumes()
 	EventBus.gate_closed.connect(_on_gate_closed)
 	EventBus.checkpoint_reached.connect(_on_checkpoint_reached)
 	EventBus.level_completed.connect(_on_level_completed)
 	EventBus.score_changed.emit(score)
 	EventBus.lives_changed.emit(lives)
-	EventBus.fruit_collected.emit(fruit_count)
+	EventBus.shards_changed.emit(shard_count, SHARDS_REQUIRED)
 
 
 func _load_default_character() -> CharacterData:
@@ -112,11 +119,8 @@ func select_character(data: CharacterData) -> void:
 ## Pickup gọi hàm này khi người chơi chạm vào.
 func apply_pickup(kind: StringName, amount: int, by: Node) -> void:
 	match kind:
-		&"fruit":
-			collect_fruit(maxi(amount, 1))
-		&"heart":
-			if heal_player(by, maxi(amount, 1)) > 0:
-				AudioManager.play_sfx(&"heart")
+		&"shard":
+			collect_shard(maxi(amount, 1))
 		&"shield":
 			if shield_player(by, SHIELD_DURATION):
 				AudioManager.play_sfx(&"shield")
@@ -124,33 +128,31 @@ func apply_pickup(kind: StringName, amount: int, by: Node) -> void:
 			push_warning("GameManager: không biết loại đồ '%s'." % kind)
 
 
-## +100 điểm mỗi quả; đủ FRUIT_PER_LIFE quả -> +1 mạng.
-func collect_fruit(amount: int = 1) -> void:
+## Nhặt mảnh Rift: +SHARD_SCORE điểm, đếm vào màn hiện tại. Đủ SHARDS_REQUIRED
+## -> phát shards_changed để ExitGate mở cánh.
+func collect_shard(amount: int = 1) -> void:
 	var n: int = maxi(amount, 0)
 	if n == 0:
 		return
-	add_score(FRUIT_SCORE * n)
-	fruit_count += n
-	while fruit_count >= FRUIT_PER_LIFE:
-		fruit_count -= FRUIT_PER_LIFE
-		lives += 1
-		EventBus.lives_changed.emit(lives)
-		AudioManager.play_sfx(&"one_up")
-	EventBus.fruit_collected.emit(fruit_count)
-	AudioManager.play_sfx(&"fruit")
+	add_score(SHARD_SCORE * n)
+	add_shards(n)
+	AudioManager.play_sfx(&"pickup")
+
+
+func add_shards(amount: int = 1) -> void:
+	shard_count = maxi(shard_count + maxi(amount, 0), 0)
+	EventBus.shards_changed.emit(shard_count, SHARDS_REQUIRED)
+	AudioManager.play_sfx(&"one_up") if shard_count == SHARDS_REQUIRED else null
+
+
+## true khi đã thu đủ mảnh Rift của màn.
+func shards_complete() -> bool:
+	return shard_count >= SHARDS_REQUIRED
 
 
 ## Hạ quái (boss = true -> +2000).
 func report_enemy_killed(is_boss: bool = false) -> void:
 	add_score(BOSS_KILL_SCORE if is_boss else ENEMY_KILL_SCORE)
-
-
-## Tim: trả về số HP thực sự hồi được.
-func heal_player(player: Node, amount: int) -> int:
-	var p := player as Player
-	if p == null:
-		return 0
-	return p.heal(amount)
 
 
 ## Khiên: trả về true nếu áp dụng được.
@@ -221,6 +223,11 @@ func _on_level_completed() -> void:
 		last_stars = 1
 	SaveManager.set_stars(current_level, last_stars)
 	SaveManager.submit_score(score)
+	# Xong ải hướng dẫn -> từ lần sau vào game bỏ qua Level0.
+	if current_level == TUTORIAL_LEVEL:
+		SaveManager.mark_tutorial_completed()
+	# Mở ải KẾ TIẾP (không phải ải vừa chơi - xem ghi chú go_to_level).
+	SaveManager.unlock(current_level + 1)
 
 
 # --- Điểm / mạng -----------------------------------------------------------
@@ -231,6 +238,7 @@ func add_score(n: int) -> void:
 
 
 func lose_life() -> void:
+	deaths_this_level += 1
 	lives = maxi(lives - 1, 0)
 	EventBus.lives_changed.emit(lives)
 	if lives == 0:
@@ -240,11 +248,12 @@ func lose_life() -> void:
 func reset_run() -> void:
 	score = 0
 	lives = START_LIVES
-	fruit_count = 0
+	shard_count = 0
 	last_checkpoint = Vector2.ZERO
+	deaths_this_level = 0
 	EventBus.score_changed.emit(score)
 	EventBus.lives_changed.emit(lives)
-	EventBus.fruit_collected.emit(fruit_count)
+	EventBus.shards_changed.emit(shard_count, SHARDS_REQUIRED)
 
 
 # --- Chuyển màn ------------------------------------------------------------
@@ -257,11 +266,18 @@ func is_boss_level(level: int) -> bool:
 	return level == BOSS_LEVEL
 
 
+## Vào ải. KHÔNG unlock ở đây: ải tiếp theo chỉ mở khi _on_level_completed()
+## (tức người chơi đã thắng), nếu không sẽ mở sẵn cả 6 ải ngay lần đầu.
+## TUTORIAL_LEVEL (0) được phép vào: clamp từ 0 chứ không từ 1.
 func go_to_level(level: int) -> void:
-	current_level = clampi(level, 1, LEVEL_COUNT)
+	current_level = clampi(level, TUTORIAL_LEVEL, LEVEL_COUNT)
 	last_checkpoint = Vector2.ZERO
-	SaveManager.unlock(current_level)
-	_change_scene(level_path(current_level))
+	deaths_this_level = 0
+	var path: String = level_path(current_level)
+	if not ResourceLoader.exists(path):
+		push_error("GameManager: chưa có scene ải '%s' (cần tạo %s)." % [path, path])
+		return
+	_change_scene(path)
 
 
 func restart_level() -> void:
@@ -274,41 +290,4 @@ func go_to_menu() -> void:
 
 
 func _change_scene(path: String) -> void:
-	if _changing_scene:
-		return
-	_changing_scene = true
-	await _fade(fade_time, 1.0)
-	var err: int = get_tree().change_scene_to_file(path)
-	if err != OK:
-		push_error("GameManager: không load được scene '%s' (mã %d)." % [path, err])
-	await get_tree().process_frame
-	await get_tree().process_frame
-	_changing_scene = false
-	await _fade(fade_time, 0.0)
-
-
-func _fade(duration: float, target_alpha: float) -> void:
-	if duration <= 0.0:
-		return
-	_ensure_fade_rect()
-	_fade_rect.visible = true
-	_fade_rect.modulate.a = 1.0 - target_alpha
-	var tween := create_tween()
-	tween.tween_property(_fade_rect, "modulate:a", target_alpha, duration)
-	await tween.finished
-	_fade_rect.visible = false
-
-
-func _ensure_fade_rect() -> void:
-	if _fade_rect != null:
-		return
-	_fade_layer = CanvasLayer.new()
-	_fade_layer.layer = 128
-	_fade_layer.name = "FadeLayer"
-	add_child(_fade_layer)
-	_fade_rect = ColorRect.new()
-	_fade_rect.name = "FadeRect"
-	_fade_rect.color = Color(0, 0, 0, 1)
-	_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_fade_layer.add_child(_fade_rect)
+	SceneTransition.change_scene(path)

@@ -4,6 +4,8 @@ extends Area2D
 
 @export var damage: int = 1
 @export var knockback: Vector2 = Vector2(150, -150)
+## Opt in to this hitbox's knockback instead of Player's default hit response.
+@export var apply_knockback: bool = false
 ## false = tắt CollisionShape (không va chạm, không gây đòn).
 @export var active: bool = true
 

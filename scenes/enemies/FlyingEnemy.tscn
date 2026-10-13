@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/enemies/Enemy.tscn" id="1_enemy"]
+[ext_resource type="Script" path="res://scenes/enemies/flying_enemy.gd" id="2_flying"]
+[ext_resource type="Script" path="res://scenes/enemies/states/enemy_state.gd" id="3_state"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_detect"]
+radius = 120.0
+
+[node name="FlyingEnemy" instance=ExtResource("1_enemy")]
+has_gravity = false
+script = ExtResource("2_flying")
+
+[node name="DetectArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectArea"]
+shape = SubResource("CircleShape2D_detect")
+
+[node name="StateMachine" parent="." index="6"]
+initial_state = NodePath("Patrol")
+
+[node name="Return" type="Node" parent="StateMachine"]
+script = ExtResource("3_state")

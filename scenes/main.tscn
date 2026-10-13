@@ -1,3 +1,3 @@
-[gd_scene format=3 uid="uid://bspacebunnyentry"]
+[gd_scene format=3 uid="uid://qosdbftxxuwk"]
 
-[node name="Main" type="Node"]
+[node name="Main" type="Node" unique_id=1177781270]

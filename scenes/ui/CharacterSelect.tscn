@@ -1,52 +1,181 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scenes/ui/character_select.gd" id="1_select"]
+[ext_resource type="Script" path="res://scenes/ui/safe_area_margin.gd" id="2_safe"]
+[ext_resource type="Script" path="res://scenes/ui/ui_button.gd" id="3_button"]
+[ext_resource type="PackedScene" path="res://scenes/ui/PipRow.tscn" id="4_pip"]
 
 [node name="CharacterSelect" type="Control"]
+process_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("1_select")
-columns = 3
 
 [node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.09, 0.11, 0.16, 1)
+mouse_filter = 2
+color = Color(0.05, 0.07, 0.12, 0.8)
 
-[node name="Layout" type="MarginContainer" parent="."]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 8
-
-[node name="VBox" type="VBoxContainer" parent="Layout"]
-theme_override_constants/separation = 6
-
-[node name="Title" type="Label" parent="Layout/VBox"]
+[node name="SafeArea" type="MarginContainer" parent="."]
 unique_name_in_owner = true
-text = "CHỌN NHÂN VẬT"
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_safe")
+
+[node name="Panel" type="PanelContainer" parent="SafeArea"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Column" type="VBoxContainer" parent="SafeArea/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Title" type="Label" parent="SafeArea/Panel/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+text = "CHARACTER SELECT"
 horizontal_alignment = 1
 
-[node name="Scroll" type="ScrollContainer" parent="Layout/VBox"]
-size_flags_vertical = 3
-
-[node name="Grid" type="GridContainer" parent="Layout/VBox/Scroll"]
+[node name="Stage" type="HBoxContainer" parent="SafeArea/Panel/Column"]
 unique_name_in_owner = true
-size_flags_horizontal = 3
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="PrevButton" type="Button" parent="SafeArea/Panel/Column/Stage"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+theme_type_variation = &"Title"
+text = "<"
+script = ExtResource("3_button")
+
+[node name="Preview" type="SubViewportContainer" parent="SafeArea/Panel/Column/Stage"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_vertical = 4
+stretch = false
+
+[node name="Sub" type="SubViewport" parent="SafeArea/Panel/Column/Stage/Preview"]
+handle_input_locally = false
+size = Vector2i(64, 64)
+render_target_update_mode = 1
+transparent_bg = true
+
+[node name="Sprite" type="AnimatedSprite2D" parent="SafeArea/Panel/Column/Stage/Preview/Sub"]
+unique_name_in_owner = true
+position = Vector2(32, 32)
+scale = Vector2(2, 2)
+texture_filter = 1
+
+[node name="NextButton" type="Button" parent="SafeArea/Panel/Column/Stage"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+theme_type_variation = &"Title"
+text = ">"
+script = ExtResource("3_button")
+
+[node name="NameLabel" type="Label" parent="SafeArea/Panel/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Mask Dude"
+horizontal_alignment = 1
+
+[node name="StatsBox" type="PanelContainer" parent="SafeArea/Panel/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"InsetPanel"
+
+[node name="Stats" type="VBoxContainer" parent="SafeArea/Panel/Column/StatsBox"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Grid" type="GridContainer" parent="SafeArea/Panel/Column/StatsBox/Stats"]
+unique_name_in_owner = true
+layout_mode = 2
 theme_override_constants/h_separation = 6
-theme_override_constants/v_separation = 6
+theme_override_constants/v_separation = 2
+columns = 2
 
-[node name="Back" type="Button" parent="Layout/VBox"]
+[node name="HpLabel" type="Label" parent="SafeArea/Panel/Column/StatsBox/Stats/Grid"]
+layout_mode = 2
+text = "HP"
+
+[node name="HpRow" parent="SafeArea/Panel/Column/StatsBox/Stats/Grid" instance=ExtResource("4_pip")]
+layout_mode = 2
 unique_name_in_owner = true
-text = "BACK"
+pip_size = 11
+
+[node name="AtkLabel" type="Label" parent="SafeArea/Panel/Column/StatsBox/Stats/Grid"]
+layout_mode = 2
+text = "ATK"
+
+[node name="AtkRow" parent="SafeArea/Panel/Column/StatsBox/Stats/Grid" instance=ExtResource("4_pip")]
+layout_mode = 2
+unique_name_in_owner = true
+pip_size = 11
+
+[node name="SpdLabel" type="Label" parent="SafeArea/Panel/Column/StatsBox/Stats/Grid"]
+layout_mode = 2
+text = "SPD"
+
+[node name="SpdValue" type="Label" parent="SafeArea/Panel/Column/StatsBox/Stats/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "1.00x"
+
+[node name="JmpLabel" type="Label" parent="SafeArea/Panel/Column/StatsBox/Stats/Grid"]
+layout_mode = 2
+text = "JMP"
+
+[node name="JmpValue" type="Label" parent="SafeArea/Panel/Column/StatsBox/Stats/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "1.00x"
+
+[node name="AbilityRow" type="HBoxContainer" parent="SafeArea/Panel/Column/StatsBox/Stats"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="AbilityKey" type="Label" parent="SafeArea/Panel/Column/StatsBox/Stats/AbilityRow"]
+layout_mode = 2
+text = "SKILL"
+
+[node name="AbilityValue" type="Label" parent="SafeArea/Panel/Column/StatsBox/Stats/AbilityRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "-"
+
+[node name="CloseButton" type="Button" parent="SafeArea/Panel/Column"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+focus_mode = 0
+text = "CLOSE"
+script = ExtResource("3_button")

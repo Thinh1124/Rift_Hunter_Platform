@@ -19,10 +19,15 @@ const STATE_DEAD: StringName = &"Dead"
 
 ## Enemy.tscn dùng "walk", nhân vật chính dùng "run".
 const ANIM_ALIASES: Dictionary[StringName, StringName] = {&"run": &"walk"}
+## Scene mảnh Rift rơi ra khi quái chết.
+const SHARD_SCENE: PackedScene = preload("res://scenes/objects/RiftShard.tscn")
 
 @export_group("Health")
 @export_range(1, 99, 1) var max_hp: int = 1
 @export_range(0, 9999, 10) var score_value: int = 200
+## Chết có rơi mảnh Rift không. Boss/gate tắt để không phá số mảnh của màn.
+@export var drops_shards: bool = true
+@export_range(0, 5, 1) var shard_drop: int = 1
 ## Trong state Hurt quái không hành động (giây).
 @export_range(0.0, 2.0, 0.01) var hurt_stun: float = 0.25
 ## Nháy trắng khi trúng đòn (giây).
@@ -108,7 +113,7 @@ func _ready() -> void:
 	if contact_hitbox != null:
 		contact_hitbox.damage = contact_damage
 	if stomp_zone != null:
-		stomp_zone.body_entered.connect(_on_stomp_zone_body_entered)
+		stomp_zone.area_entered.connect(_on_stomp_zone_area_entered)
 	if on_screen != null:
 		on_screen.screen_entered.connect(_on_screen_entered)
 		on_screen.screen_exited.connect(_on_screen_exited)
@@ -316,14 +321,19 @@ func apply_knockback(from_pos: Vector2) -> void:
 	velocity = Vector2(away * knockback, knockback_lift)
 
 
-func _on_stomp_zone_body_entered(body: Node2D) -> void:
+func _on_stomp_zone_area_entered(area: Area2D) -> void:
 	if dead:
 		return
-	var p := body as Player
-	if p == null or not p.can_stomp():
+	# Hurtbox của Player không được gán trực tiếp, nhưng nó là con của Player.
+	# Hãy tìm Player parent của Hurtbox.
+	var parent_node := area.get_parent()
+	var p := parent_node as Player
+	if p == null:
+		return
+	if not p.can_stomp():
 		return
 	take_damage(stomp_damage, p.global_position)
-	p.stomp_bounce()
+	p.notify_stomp(self)
 	AudioManager.play_sfx(&"stomp")
 
 
@@ -346,9 +356,29 @@ func _on_died() -> void:
 	GameManager.add_score(score_value)
 	AudioManager.play_sfx(&"enemy_die")
 	EventBus.request_shake.emit(2.0, 0.12)
+	# Phát animation dead
+	play_anim(&"dead")
+	_drop_shards()
 	if state_machine != null:
 		state_machine.change_state(STATE_DEAD)
 	died_enemy.emit(self)
+
+
+## Quái chết rơi mảnh Rift. Đây là nguồn duy nhất của mảnh: người chơi phải
+## đánh quái mới đủ mảnh mở cánh cổng cuối màn.
+func _drop_shards() -> void:
+	if not drops_shards or shard_drop <= 0:
+		return
+	var parent := get_parent()
+	if parent == null:
+		return
+	for i in shard_drop:
+		var shard := SHARD_SCENE.instantiate() as RiftShard
+		if shard == null:
+			return
+		# Nảy tản ra nhẹ, để người chơi phải đi nhặt chứ không tự vào túi.
+		shard.position = global_position + Vector2(randf_range(-8.0, 8.0), randf_range(-6.0, 2.0))
+		parent.call_deferred("add_child", shard)
 
 
 ## Chết rồi -> không đánh, không nhận đòn, không đạp đầu được nữa.
@@ -370,7 +400,11 @@ func play_anim(anim: StringName) -> void:
 	if not sprite.sprite_frames.has_animation(name) and ANIM_ALIASES.has(anim):
 		name = ANIM_ALIASES[anim]
 	if not sprite.sprite_frames.has_animation(name):
-		name = &"idle"
+		# Fallback: "dead" -> "idle", "run" -> "walk", etc.
+		if anim == &"dead":
+			name = &"idle"
+		else:
+			name = &"idle"
 	if not sprite.sprite_frames.has_animation(name):
 		return
 	if sprite.animation == name and sprite.is_playing():

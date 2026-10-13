@@ -1,0 +1,56 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scenes/objects/saw.gd" id="1_script"]
+[ext_resource type="Script" path="res://components/hitbox_component.gd" id="2_hitbox"]
+[ext_resource type="SpriteFrames" path="res://assets/frames/saw_frames.tres" id="3_frames"]
+
+[sub_resource type="CircleShape2D" id="circle"]
+resource_local_to_scene = true
+radius = 14.0
+
+[sub_resource type="Gradient" id="spark_color"]
+colors = PackedColorArray(1, 0.9, 0.5, 1, 1, 0.4, 0.1, 0)
+
+[node name="Saw" type="Node2D"]
+script = ExtResource("1_script")
+speed = 60.0
+path_length = 96.0
+direction = Vector2(1, 0)
+rotation_speed = 720.0
+damage = 1
+pause_at_ends = 0.3
+
+[node name="Path" type="Node2D" parent="."]
+[node name="A" type="Marker2D" parent="Path"]
+[node name="B" type="Marker2D" parent="Path"]
+position = Vector2(96, 0)
+
+[node name="HitboxComponent" type="Area2D" parent="."]
+collision_layer = 128
+collision_mask = 2
+script = ExtResource("2_hitbox")
+damage = 1
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="HitboxComponent"]
+sprite_frames = ExtResource("3_frames")
+animation = &"spin"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxComponent"]
+shape = SubResource("circle")
+
+[node name="Sparks" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 6
+lifetime = 0.2
+one_shot = true
+explosiveness = 1.0
+randomness = 0.3
+local_coords = false
+direction = Vector2(-1, 0)
+spread = 35.0
+gravity = Vector2(0, 100)
+initial_velocity_min = 35.0
+initial_velocity_max = 70.0
+scale_amount_min = 1.0
+scale_amount_max = 2.0
+color_ramp = SubResource("spark_color")

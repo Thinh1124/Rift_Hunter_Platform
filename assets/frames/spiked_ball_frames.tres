@@ -10,4 +10,4 @@ region = Rect2(0, 0, 28, 28)
 animations = [{"frames": [{
 "duration": 1.0,
 "texture": SubResource("atlas_1")
-}], "loop": true, "name": &"spin", "speed": 1.0}]
+}], "loop": true, "name": &"idle", "speed": 1.0}]

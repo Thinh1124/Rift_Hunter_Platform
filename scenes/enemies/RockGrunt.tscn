@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/enemies/Enemy.tscn" id="1_enemy"]
+[ext_resource type="Resource" path="res://assets/frames/rock_grunt_frames.tres" id="2_frames"]
+
+[node name="RockGrunt" instance=ExtResource("1_enemy")]
+sprite = NodePath("AnimatedSprite2D")
+max_hp = 1
+speed = 30.0
+contact_damage = 1
+score_value = 100
+gravity = 900.0
+hurt_stun = 0.25
+flash_time = 0.1
+knockback = 150.0
+knockback_lift = -100.0
+death_delay = 0.4
+detect_radius = 120.0
+attack_radius = 32.0
+detect_time = 0.25
+attack_delay = 0.6
+
+[node name="AnimatedSprite2D" parent="." index="0"]
+sprite_frames = ExtResource("2_frames")
+animation = &"idle"
+autoplay = true
+
+[node name="StateMachine" parent="." index="6"]
+initial_state = NodePath("Patrol")

@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/objects/dialogue_bubble.gd" id="1_script"]
+
+[node name="DialogueBubble" type="Control"]
+offset_left = -64.0
+offset_top = -118.0
+offset_right = 64.0
+offset_bottom = -52.0
+mouse_filter = 0
+script = ExtResource("1_script")
+
+[node name="Panel" type="Panel" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+text = ""
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3

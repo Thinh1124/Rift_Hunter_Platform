@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=8 format=3]
+[gd_resource type="SpriteFrames" format=3 uid="uid://dvpy5ui1thvri"]
 
 [ext_resource type="Texture2D" uid="uid://da58luo8hroo7" path="res://assets/Items/Fruits/Apple.png" id="1_tex"]
 
@@ -27,7 +27,8 @@ atlas = ExtResource("1_tex")
 region = Rect2(160, 0, 32, 32)
 
 [resource]
-animations = [{"frames": [{
+animations = [{
+"frames": [{
 "duration": 1.0,
 "texture": SubResource("atlas_1")
 }, {
@@ -45,4 +46,8 @@ animations = [{"frames": [{
 }, {
 "duration": 1.0,
 "texture": SubResource("atlas_6")
-}], "loop": true, "name": &"spin", "speed": 10.0}]
+}],
+"loop": 1,
+"name": &"spin",
+"speed": 10.0
+}]

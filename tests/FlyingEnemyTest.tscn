@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="1_player"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/FlyingBug.tscn" id="2_bug"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
+size = Vector2(800, 100)
+
+[node name="FlyingEnemyTest" type="Node2D"]
+
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(400, 300)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("RectangleShape2D_ground")
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector2(100, 200)
+
+[node name="FlyingBug" parent="." instance=ExtResource("2_bug")]
+position = Vector2(400, 100)

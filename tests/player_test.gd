@@ -14,8 +14,14 @@ var fails: int = 0
 
 func _ready() -> void:
 	player = $Player
+	# Các phép so sánh vật lý (chiều cao nhảy, tốc độ chạy) viết theo NHÂN VẬT GỐC
+	# (jump_mult / speed_mult = 1.0). Không ghim lại thì kết quả đổi theo nhân vật
+	# đang lưu trong save của người chơi -> test fail lung tung.
+	var base: CharacterData = GameManager.load_character("pink_man")
+	if base != null:
+		player.apply_character(base)
 	print("=== PLAYER TEST ===")
-	print("character      : ", GameManager.selected_character.display_name if GameManager.selected_character else "null")
+	print("character      : ", player.character.display_name if player.character else "null", " (ghim de on dinh)")
 	print("anim co idle/run/jump/fall/hit/dead: ", _has_all_anims())
 	print("sprite_frames  : ", player.sprite.sprite_frames != null)
 	print("hurtbox mask   : ", player.hurtbox.collision_mask, " (layer5|8 = 144)")

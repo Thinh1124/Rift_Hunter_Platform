@@ -1,0 +1,17 @@
+{
+  "npc_guide": {
+    "default": ["Hello there!", "Please close the monster gates!"],
+    "hint": ["Try stomping on their heads!"],
+    "after_gates": ["Thanks for closing the gates!"]
+  },
+  "npc_move": {
+    "default": ["Use A and D to walk left and right.", "Tap the on-screen buttons on mobile.", "Press SPACE to jump."],
+    "hint": ["Hold a direction to run further."],
+    "after_gates": ["Nice moves!"]
+  },
+  "npc_enemy": {
+    "default": ["That grunt patrols on its own.", "Jump on its head to defeat it.", "Getting hit from the side pushes you back."],
+    "hint": ["Land on the head from above to stomp."],
+    "after_gates": ["Good stomp!"]
+  }
+}

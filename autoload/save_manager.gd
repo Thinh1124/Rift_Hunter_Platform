@@ -3,6 +3,11 @@ extends Node
 
 const SAVE_PATH: String = "user://save.json"
 const MAX_STARS: int = 3
+## Giới hạn 2 slider "nút ảo" trong Settings (khớp min/max của HSlider trong scene).
+const TOUCH_OPACITY_MIN: float = 0.2
+const TOUCH_OPACITY_MAX: float = 1.0
+const TOUCH_SCALE_MIN: float = 0.8
+const TOUCH_SCALE_MAX: float = 1.3
 
 var unlocked_level: int = 1
 var best_score: int = 0
@@ -11,6 +16,12 @@ var selected_character_id: String = ""
 var music_vol: float = 0.8
 var sfx_vol: float = 1.0
 var vibration: bool = true
+## Độ mờ nút cảm ứng (0.2 - 1.0).
+var touch_opacity: float = 0.5
+## Hệ số kích thước nút cảm ứng (0.8 - 1.3).
+var touch_scale: float = 1.0
+## true = đã xem xong ải hướng dẫn (Level0). Chỉ vào lần đầu.
+var tutorial_completed: bool = false
 
 
 func _ready() -> void:
@@ -27,6 +38,9 @@ func default_data() -> Dictionary:
 		"music_vol": 0.8,
 		"sfx_vol": 1.0,
 		"vibration": true,
+		"touch_opacity": touch_opacity,
+		"touch_scale": touch_scale,
+		"tutorial_completed": tutorial_completed,
 	}
 
 
@@ -47,6 +61,9 @@ func load_data() -> void:
 	music_vol = 0.8
 	sfx_vol = 1.0
 	vibration = true
+	touch_opacity = 0.5
+	touch_scale = 1.0
+	tutorial_completed = false
 	if not FileAccess.file_exists(SAVE_PATH):
 		return
 	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
@@ -72,6 +89,9 @@ func to_dictionary() -> Dictionary:
 		"music_vol": music_vol,
 		"sfx_vol": sfx_vol,
 		"vibration": vibration,
+		"touch_opacity": touch_opacity,
+		"touch_scale": touch_scale,
+		"tutorial_completed": tutorial_completed,
 	}
 
 
@@ -82,6 +102,9 @@ func _from_dictionary(source: Dictionary) -> void:
 	music_vol = clampf(float(source.get("music_vol", 0.8)), 0.0, 1.0)
 	sfx_vol = clampf(float(source.get("sfx_vol", 1.0)), 0.0, 1.0)
 	vibration = bool(source.get("vibration", true))
+	touch_opacity = clampf(float(source.get("touch_opacity", 0.5)), TOUCH_OPACITY_MIN, TOUCH_OPACITY_MAX)
+	touch_scale = clampf(float(source.get("touch_scale", 1.0)), TOUCH_SCALE_MIN, TOUCH_SCALE_MAX)
+	tutorial_completed = bool(source.get("tutorial_completed", false))
 	stars = {}
 	var raw_stars: Variant = source.get("stars", {})
 	if raw_stars is Dictionary:
@@ -125,6 +148,31 @@ func set_sfx_volume(v: float) -> void:
 func set_vibration(enabled: bool) -> void:
 	vibration = enabled
 	save()
+
+
+## Kéo slider Độ mờ nút ảo. Lưu ngay để kéo rồi tắt game vẫn giữ.
+func set_touch_opacity(value: float) -> void:
+	touch_opacity = clampf(value, TOUCH_OPACITY_MIN, TOUCH_OPACITY_MAX)
+	save()
+
+
+## Kéo slider Kích thước nút ảo. Lưu ngay để kéo rồi tắt game vẫn giữ.
+func set_touch_scale(value: float) -> void:
+	touch_scale = clampf(value, TOUCH_SCALE_MIN, TOUCH_SCALE_MAX)
+	save()
+
+
+## Đánh dấu đã xong ải hướng dẫn -> từ lần sau vào game bỏ qua Level0.
+func mark_tutorial_completed() -> void:
+	if tutorial_completed:
+		return
+	tutorial_completed = true
+	save()
+
+
+## true = cần chạy ải hướng dẫn trước khi vào ải thật.
+func needs_tutorial() -> bool:
+	return not tutorial_completed
 
 
 func reset_save() -> void:

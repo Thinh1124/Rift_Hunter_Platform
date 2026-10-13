@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=10 format=3]
+[gd_resource type="SpriteFrames" format=3 uid="uid://cefxl3uplgq7f"]
 
 [ext_resource type="Texture2D" uid="uid://uu1prjdrjfaa" path="res://assets/Traps/Platforms/Grey On (32x8).png" id="1_tex"]
 
@@ -35,7 +35,8 @@ atlas = ExtResource("1_tex")
 region = Rect2(224, 0, 32, 8)
 
 [resource]
-animations = [{"frames": [{
+animations = [{
+"frames": [{
 "duration": 1.0,
 "texture": SubResource("atlas_1")
 }, {
@@ -59,4 +60,8 @@ animations = [{"frames": [{
 }, {
 "duration": 1.0,
 "texture": SubResource("atlas_8")
-}], "loop": true, "name": &"move", "speed": 10.0}]
+}],
+"loop": 1,
+"name": &"move",
+"speed": 10.0
+}]

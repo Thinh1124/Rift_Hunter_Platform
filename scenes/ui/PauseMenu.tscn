@@ -1,0 +1,82 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/pause_menu.gd" id="1_pause"]
+[ext_resource type="Script" path="res://scenes/ui/ui_button.gd" id="2_button"]
+
+[node name="PauseMenu" type="CanvasLayer"]
+layer = 20
+process_mode = 3
+visible = false
+script = ExtResource("1_pause")
+
+[node name="Shade" type="ColorRect" parent="."]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="Center" type="CenterContainer" parent="."]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="Column" type="VBoxContainer" parent="Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Center/Panel/Margin/Column"]
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 16
+text = "PAUSED"
+horizontal_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="Center/Panel/Margin/Column"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "RESUME"
+script = ExtResource("2_button")
+
+[node name="RestartButton" type="Button" parent="Center/Panel/Margin/Column"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "RETRY"
+script = ExtResource("2_button")
+
+[node name="SettingsButton" type="Button" parent="Center/Panel/Margin/Column"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "SETTINGS"
+script = ExtResource("2_button")
+
+[node name="QuitButton" type="Button" parent="Center/Panel/Margin/Column"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "MAIN MENU"
+script = ExtResource("2_button")

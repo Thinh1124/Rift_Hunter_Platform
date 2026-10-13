@@ -20,4 +20,5 @@ speed_mult = 1.1
 jump_mult = 1.2
 max_hp_bonus = -1
 attack_cooldown_mult = 0.7
+ability = "Lightning fast, fragile body"
 unlocked_by_default = true

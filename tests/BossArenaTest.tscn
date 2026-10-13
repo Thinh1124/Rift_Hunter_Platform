@@ -1,0 +1,60 @@
+[gd_scene load_steps=7 format=3]
+[ext_resource type="Script" path="res://tests/boss_arena_test.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/Boss.tscn" id="3_boss"]
+[ext_resource type="Script" path="res://scripts/camera_shake.gd" id="4_camera"]
+[sub_resource type="RectangleShape2D" id="floor"]
+size = Vector2(640, 40)
+[sub_resource type="RectangleShape2D" id="wall"]
+size = Vector2(20, 320)
+
+[node name="BossArenaTest" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(0, 220)
+collision_layer = 1
+collision_mask = 0
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("floor")
+
+[node name="LeftWall" type="StaticBody2D" parent="."]
+position = Vector2(-330, 80)
+collision_layer = 1
+collision_mask = 0
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall"]
+shape = SubResource("wall")
+
+[node name="RightWall" type="StaticBody2D" parent="."]
+position = Vector2(330, 80)
+collision_layer = 1
+collision_mask = 0
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall"]
+shape = SubResource("wall")
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(-220, 200)
+
+[node name="Camera2D" parent="Player" index="4"]
+enabled = false
+
+[node name="Boss" parent="." instance=ExtResource("3_boss")]
+position = Vector2(180, 128)
+arena_left = -320.0
+arena_right = 320.0
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(0, 60)
+script = ExtResource("4_camera")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+[node name="Status" type="Label" parent="HUD"]
+offset_left = 18.0
+offset_top = 14.0
+theme_override_font_sizes/font_size = 18
+text = "Boss 20/20"
+
+[node name="Instructions" type="Label" parent="HUD"]
+offset_left = 18.0
+offset_top = 44.0
+text = "A/D or arrows: move | Space: jump | J/X: shoot"

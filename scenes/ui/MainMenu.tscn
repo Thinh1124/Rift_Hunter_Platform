@@ -1,0 +1,167 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/main_menu.gd" id="1_menu"]
+[ext_resource type="Script" path="res://scenes/ui/ui_button.gd" id="2_button"]
+[ext_resource type="Script" path="res://scenes/ui/safe_area_margin.gd" id="3_safe"]
+[ext_resource type="Script" path="res://scenes/ui/parallax_texture.gd" id="4_parallax"]
+[ext_resource type="Texture2D" path="res://assets/Background/Blue.png" id="5_bg"]
+
+[node name="MainMenu" type="Control"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_menu")
+
+[node name="Background" type="TextureRect" parent="."]
+unique_name_in_owner = true
+modulate = Color(0.35, 0.45, 0.65, 1)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_bg")
+script = ExtResource("4_parallax")
+speed = 10.0
+
+[node name="Shade" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.05, 0.07, 0.12, 0.62)
+
+[node name="SafeArea" type="MarginContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("3_safe")
+
+[node name="Row" type="HBoxContainer" parent="SafeArea"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="Left" type="VBoxContainer" parent="SafeArea/Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Title" type="Label" parent="SafeArea/Row/Left"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "SPACE BUNNY"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="SafeArea/Row/Left"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.66, 0.56, 0.4, 1)
+theme_override_font_sizes/font_size = 10
+text = "RIFT HUNTER"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="SafeArea/Row/Left"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Buttons" type="VBoxContainer" parent="SafeArea/Row/Left"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 6
+
+[node name="PlayButton" type="Button" parent="SafeArea/Row/Left/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+focus_mode = 0
+theme_override_font_sizes/font_size = 12
+text = "PLAY"
+script = ExtResource("2_button")
+
+[node name="SettingsButton" type="Button" parent="SafeArea/Row/Left/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+focus_mode = 0
+theme_override_font_sizes/font_size = 12
+text = "SETTINGS"
+script = ExtResource("2_button")
+
+[node name="QuitButton" type="Button" parent="SafeArea/Row/Left/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+focus_mode = 0
+theme_override_font_sizes/font_size = 12
+text = "QUIT"
+script = ExtResource("2_button")
+
+[node name="Footer" type="Label" parent="SafeArea/Row/Left"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48, 0.41, 0.29, 1)
+theme_override_font_sizes/font_size = 10
+text = "Version 1.0"
+horizontal_alignment = 1
+
+[node name="Right" type="VBoxContainer" parent="SafeArea/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Preview" type="SubViewportContainer" parent="SafeArea/Row/Right"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+stretch = false
+
+[node name="Sub" type="SubViewport" parent="SafeArea/Row/Right/Preview"]
+handle_input_locally = false
+size = Vector2i(64, 64)
+render_target_update_mode = 1
+transparent_bg = true
+
+[node name="Sprite" type="AnimatedSprite2D" parent="SafeArea/Row/Right/Preview/Sub"]
+unique_name_in_owner = true
+position = Vector2(32, 32)
+scale = Vector2(2, 2)
+texture_filter = 1
+
+[node name="CharacterName" type="Label" parent="SafeArea/Row/Right"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Mask Dude"
+horizontal_alignment = 1
+
+[node name="CharacterButton" type="Button" parent="SafeArea/Row/Right"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+focus_mode = 0
+text = "CHARACTER"
+script = ExtResource("2_button")

@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scenes/objects/spikes.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/Traps/Spikes/Idle.png" id="2_texture"]
+
+[sub_resource type="RectangleShape2D" id="rectangle"]
+resource_local_to_scene = true
+size = Vector2(16, 8)
+
+[node name="Spikes" type="Area2D"]
+collision_layer = 128
+collision_mask = 2
+script = ExtResource("1_script")
+damage = 1
+knockback = Vector2(0, -200)
+apply_knockback = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_repeat = 2
+texture = ExtResource("2_texture")
+region_enabled = true
+region_rect = Rect2(0, 0, 16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 4)
+shape = SubResource("rectangle")

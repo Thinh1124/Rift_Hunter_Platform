@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=8 format=3]
+[gd_resource type="SpriteFrames" format=3 uid="uid://x3on8oo6r12f"]
 
 [ext_resource type="Texture2D" uid="uid://ftmeiu1qvx38" path="res://assets/Traps/Spike Head/Idle.png" id="1_tex"]
 [ext_resource type="Texture2D" uid="uid://bdmub13bydtwv" path="res://assets/Traps/Spike Head/Blink (54x52).png" id="2_tex"]
@@ -24,10 +24,16 @@ atlas = ExtResource("2_tex")
 region = Rect2(162, 0, 54, 52)
 
 [resource]
-animations = [{"frames": [{
+animations = [{
+"frames": [{
 "duration": 1.0,
 "texture": SubResource("atlas_1")
-}], "loop": true, "name": &"idle", "speed": 6.0}, {"frames": [{
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 6.0
+}, {
+"frames": [{
 "duration": 1.0,
 "texture": SubResource("atlas_2")
 }, {
@@ -39,4 +45,8 @@ animations = [{"frames": [{
 }, {
 "duration": 1.0,
 "texture": SubResource("atlas_5")
-}], "loop": true, "name": &"walk", "speed": 8.0}]
+}],
+"loop": 1,
+"name": &"walk",
+"speed": 8.0
+}]

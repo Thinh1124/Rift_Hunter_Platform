@@ -1,0 +1,52 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/enemies/Enemy.tscn" id="1_enemy"]
+[ext_resource type="Script" path="res://scenes/enemies/charger_enemy.gd" id="2_charger"]
+[ext_resource type="Script" path="res://scenes/enemies/states/charger_state.gd" id="3_state"]
+[ext_resource type="SpriteFrames" path="res://assets/frames/rock_grunt_frames.tres" id="4_frames"]
+
+[node name="ChargerEnemy" node_paths=PackedStringArray("sprite") instance=ExtResource("1_enemy")]
+script = ExtResource("2_charger")
+sprite = NodePath("AnimatedSprite2D")
+max_hp = 2
+speed = 30.0
+detect = 160.0
+windup = 0.5
+dash_speed = 200.0
+stun_time = 1.5
+cooldown = 1.0
+knockback_lift = 0.0
+
+[node name="AnimatedSprite2D" parent="." index="0"]
+sprite_frames = ExtResource("4_frames")
+animation = &"idle"
+
+[node name="ContactHitbox" parent="." index="4"]
+collision_layer = 16
+collision_mask = 2
+
+[node name="Patrol" parent="StateMachine" index="0"]
+script = ExtResource("3_state")
+
+[node name="Hurt" parent="StateMachine" index="4"]
+script = ExtResource("3_state")
+
+[node name="Windup" type="Node" parent="StateMachine"]
+script = ExtResource("3_state")
+
+[node name="Dash" type="Node" parent="StateMachine"]
+script = ExtResource("3_state")
+
+[node name="Stunned" type="Node" parent="StateMachine"]
+script = ExtResource("3_state")
+
+[node name="Cooldown" type="Node" parent="StateMachine"]
+script = ExtResource("3_state")
+
+[node name="SightRay" type="RayCast2D" parent="."]
+target_position = Vector2(160, 0)
+collision_mask = 3
+
+[node name="WallCheck" type="RayCast2D" parent="."]
+target_position = Vector2(7, 0)
+collision_mask = 1

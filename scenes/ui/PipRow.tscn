@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/pip_row.gd" id="1_pip"]
+
+[node name="PipRow" type="HBoxContainer"]
+z_index = 0
+layout_mode = 2
+theme_override_constants/separation = 2
+script = ExtResource("1_pip")
+
+[node name="Pip" type="TextureRect" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+size_flags_vertical = 4
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 5

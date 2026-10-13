@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=28 format=3]
+[gd_resource type="SpriteFrames" format=3 uid="uid://dfqajbkjpuhm8"]
 
 [ext_resource type="Texture2D" uid="uid://bc2lu62a6cu1n" path="res://assets/Items/Checkpoints/Checkpoint/Checkpoint (Flag Out) (64x64).png" id="1_tex"]
 
@@ -107,7 +107,8 @@ atlas = ExtResource("1_tex")
 region = Rect2(1600, 0, 64, 64)
 
 [resource]
-animations = [{"frames": [{
+animations = [{
+"frames": [{
 "duration": 1.0,
 "texture": SubResource("atlas_1")
 }, {
@@ -185,4 +186,8 @@ animations = [{"frames": [{
 }, {
 "duration": 1.0,
 "texture": SubResource("atlas_26")
-}], "loop": true, "name": &"off", "speed": 8.0}]
+}],
+"loop": 1,
+"name": &"off",
+"speed": 8.0
+}]

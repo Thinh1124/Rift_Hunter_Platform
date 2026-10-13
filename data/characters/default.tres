@@ -20,4 +20,5 @@ speed_mult = 1.0
 jump_mult = 1.0
 max_hp_bonus = 0
 attack_cooldown_mult = 1.0
+ability = "Balanced all-rounder"
 unlocked_by_default = true

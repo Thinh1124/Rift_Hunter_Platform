@@ -20,4 +20,5 @@ speed_mult = 0.9
 jump_mult = 0.95
 max_hp_bonus = 2
 attack_cooldown_mult = 1.2
+ability = "Two extra hearts, slow swing"
 unlocked_by_default = true

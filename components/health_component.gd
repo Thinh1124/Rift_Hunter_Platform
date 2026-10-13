@@ -34,16 +34,6 @@ func take_damage(amount: int, from_pos: Vector2 = Vector2.ZERO) -> void:
 		died.emit()
 
 
-func heal(amount: int) -> void:
-	if amount <= 0 or current <= 0:
-		return
-	var healed_amount: int = mini(amount, max_health - current)
-	if healed_amount <= 0:
-		return
-	current += healed_amount
-	health_changed.emit(current, max_health)
-
-
 func is_alive() -> bool:
 	return current > 0
 

@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://tests/facing_test.gd" id="1_test"]
+[ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="2_player"]
+
+[sub_resource type="RectangleShape2D" id="Rect_floor"]
+size = Vector2(900, 200)
+
+[node name="FacingTest" type="Node2D"]
+script = ExtResource("1_test")
+
+[node name="Floor" type="StaticBody2D" parent="."]
+position = Vector2(300, 388)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
+shape = SubResource("Rect_floor")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(320, 180)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(320, 288)

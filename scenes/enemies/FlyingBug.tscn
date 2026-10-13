@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/enemies/FlyingEnemy.tscn" id="1_flying"]
+[ext_resource type="Resource" path="res://assets/frames/spiked_ball_frames.tres" id="2_frames"]
+
+[node name="FlyingBug" instance=ExtResource("1_flying")]
+max_hp = 1
+speed = 60.0
+amplitude = 20.0
+frequency = 2.0
+detect_radius = 120.0
+chase_speed = 90.0
+lose_target_time = 2.0
+contact_damage = 1
+score_value = 150
+gravity = 900.0
+hurt_stun = 0.25
+
+[node name="AnimatedSprite2D" parent="." index="0"]
+sprite_frames = ExtResource("2_frames")
+animation = &"idle"
+autoplay = true
+
+[node name="DetectArea" parent="." index="6"]
+scale = Vector2(2, 2)

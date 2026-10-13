@@ -1,0 +1,17 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://tests/settings_test.gd" id="1_test"]
+[ext_resource type="PackedScene" path="res://scenes/ui/Settings.tscn" id="2_settings"]
+[ext_resource type="PackedScene" path="res://scenes/ui/TouchControls.tscn" id="3_touch"]
+[ext_resource type="PackedScene" path="res://scenes/ui/PauseMenu.tscn" id="4_pause"]
+
+[node name="SettingsTest" type="Node"]
+script = ExtResource("1_test")
+
+[node name="Settings" parent="." instance=ExtResource("2_settings")]
+overlay_mode = true
+
+[node name="TouchControls" parent="." instance=ExtResource("3_touch")]
+show_on_desktop = true
+
+[node name="PauseMenu" parent="." instance=ExtResource("4_pause")]

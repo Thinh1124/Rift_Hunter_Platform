@@ -16,16 +16,21 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="Left" type="TouchScreenButton" parent="Root"]
+unique_name_in_owner = true
 action = &"move_left"
 
 [node name="Right" type="TouchScreenButton" parent="Root"]
+unique_name_in_owner = true
 action = &"move_right"
 
 [node name="Jump" type="TouchScreenButton" parent="Root"]
+unique_name_in_owner = true
 action = &"jump"
 
 [node name="Attack" type="TouchScreenButton" parent="Root"]
+unique_name_in_owner = true
 action = &"attack"
 
 [node name="Interact" type="TouchScreenButton" parent="Root"]
+unique_name_in_owner = true
 action = &"interact"

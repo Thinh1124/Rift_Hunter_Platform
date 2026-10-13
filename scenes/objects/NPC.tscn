@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scenes/objects/npc.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/objects/DialogueBubble.tscn" id="2_bubble"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_talk"]
+resource_local_to_scene = true
+size = Vector2(44, 60)
+
+[node name="NPC" type="Node2D"]
+script = ExtResource("1_script")
+dialogue_id = "npc_guide"
+hint_after_deaths = 3
+face_player = true
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -16)
+
+[node name="TalkZone" type="Area2D" parent="."]
+position = Vector2(0, -30)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TalkZone"]
+shape = SubResource("RectangleShape2D_talk")
+
+[node name="ExclaimIcon" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(12, -52)
+z_index = 2
+
+[node name="DialogueBubble" parent="." instance=ExtResource("2_bubble")]

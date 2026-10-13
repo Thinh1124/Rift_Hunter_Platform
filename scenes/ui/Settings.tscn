@@ -1,0 +1,182 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/settings.gd" id="1_settings"]
+[ext_resource type="Script" path="res://scenes/ui/ui_button.gd" id="2_button"]
+[ext_resource type="Script" path="res://scenes/ui/safe_area_margin.gd" id="3_safe"]
+[ext_resource type="Texture2D" path="res://assets/Background/Gray.png" id="4_bg"]
+
+[node name="Settings" type="Control"]
+process_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_settings")
+
+[node name="Background" type="TextureRect" parent="."]
+modulate = Color(0.25, 0.28, 0.36, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_bg")
+stretch_mode = 1
+
+[node name="Shade" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.05, 0.07, 0.12, 0.78)
+
+[node name="SafeArea" type="MarginContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("3_safe")
+
+[node name="Panel" type="PanelContainer" parent="SafeArea"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Margin" type="MarginContainer" parent="SafeArea/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="Column" type="VBoxContainer" parent="SafeArea/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="Title" type="Label" parent="SafeArea/Panel/Margin/Column"]
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 12
+text = "SETTINGS"
+horizontal_alignment = 1
+
+[node name="MusicRow" type="HBoxContainer" parent="SafeArea/Panel/Margin/Column"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MusicLabel" type="Label" parent="SafeArea/Panel/Margin/Column/MusicRow"]
+custom_minimum_size = Vector2(104, 0)
+layout_mode = 2
+size_flags_vertical = 4
+text = "Music"
+
+[node name="MusicSlider" type="HSlider" parent="SafeArea/Panel/Margin/Column/MusicRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 0.8
+
+[node name="SfxRow" type="HBoxContainer" parent="SafeArea/Panel/Margin/Column"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SfxLabel" type="Label" parent="SafeArea/Panel/Margin/Column/SfxRow"]
+custom_minimum_size = Vector2(104, 0)
+layout_mode = 2
+size_flags_vertical = 4
+text = "SFX"
+
+[node name="SfxSlider" type="HSlider" parent="SafeArea/Panel/Margin/Column/SfxRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="VibrationCheck" type="CheckButton" parent="SafeArea/Panel/Margin/Column"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(72, 48)
+layout_mode = 2
+size_flags_horizontal = 0
+button_pressed = true
+text = "Vibrate"
+
+[node name="TouchOpacityRow" type="HBoxContainer" parent="SafeArea/Panel/Margin/Column"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="SafeArea/Panel/Margin/Column/TouchOpacityRow"]
+custom_minimum_size = Vector2(104, 0)
+layout_mode = 2
+size_flags_vertical = 4
+text = "Button opacity"
+
+[node name="TouchOpacitySlider" type="HSlider" parent="SafeArea/Panel/Margin/Column/TouchOpacityRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = 0.2
+max_value = 1.0
+step = 0.05
+value = 0.5
+
+[node name="TouchScaleRow" type="HBoxContainer" parent="SafeArea/Panel/Margin/Column"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="SafeArea/Panel/Margin/Column/TouchScaleRow"]
+custom_minimum_size = Vector2(104, 0)
+layout_mode = 2
+size_flags_vertical = 4
+text = "Button size"
+
+[node name="TouchScaleSlider" type="HSlider" parent="SafeArea/Panel/Margin/Column/TouchScaleRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = 0.8
+max_value = 1.3
+step = 0.05
+value = 1.0
+
+[node name="ResetButton" type="Button" parent="SafeArea/Panel/Margin/Column"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 12
+text = "DELETE SAVE"
+script = ExtResource("2_button")
+visible = false
+
+[node name="CloseButton" type="Button" parent="SafeArea/Panel/Margin/Column"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 12
+text = "CLOSE"
+script = ExtResource("2_button")

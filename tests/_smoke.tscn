@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://tests/_smoke.gd" id="1_s"]
+[ext_resource type="Script" path="res://components/state_machine.gd" id="2_sm"]
+[ext_resource type="Script" path="res://components/state.gd" id="3_st"]
+[ext_resource type="Script" path="res://components/hitbox_component.gd" id="4_hb"]
+[ext_resource type="Script" path="res://components/hurtbox_component.gd" id="5_hub"]
+[ext_resource type="Script" path="res://components/health_component.gd" id="6_hc"]
+
+[sub_resource type="RectangleShape2D" id="sh"]
+size = Vector2(16, 16)
+
+[node name="Smoke" type="Node"]
+script = ExtResource("1_s")
+
+[node name="Rig" type="Node2D" parent="."]
+
+[node name="Hitbox" type="Area2D" parent="Rig"]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("4_hb")
+damage = 2
+
+[node name="Shape" type="CollisionShape2D" parent="Rig/Hitbox"]
+shape = SubResource("sh")
+
+[node name="Hurtbox" type="Area2D" parent="Rig"]
+collision_layer = 3
+collision_mask = 4
+script = ExtResource("5_hub")
+one_shot_per_hit_time = 0.5
+
+[node name="HealthComponent" type="Node" parent="Rig/Hurtbox"]
+script = ExtResource("6_hc")
+max_health = 5
+
+[node name="StateMachine" type="Node" parent="Rig"]
+script = ExtResource("2_sm")
+initial_state = NodePath("idle")
+
+[node name="idle" type="Node" parent="Rig/StateMachine"]
+script = ExtResource("3_st")
+
+[node name="run" type="Node" parent="Rig/StateMachine"]
+script = ExtResource("3_st")

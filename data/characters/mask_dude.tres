@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="CharacterData" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="CharacterData" format=3 uid="uid://eb7ynk5yjs46"]
 
-[ext_resource type="Script" path="res://scripts/character_data.gd" id="1_script"]
-[ext_resource type="SpriteFrames" path="res://assets/frames/mask_dude_frames.tres" id="2_frames"]
-[ext_resource type="Texture2D" path="res://assets/Main Characters/Mask Dude/Idle (32x32).png" id="3_tex"]
+[ext_resource type="Script" uid="uid://ci7udb2ua1ijd" path="res://scripts/character_data.gd" id="1_script"]
+[ext_resource type="SpriteFrames" uid="uid://busco0smlplt6" path="res://assets/frames/mask_dude_frames.tres" id="2_frames"]
+[ext_resource type="Texture2D" uid="uid://cmq3i1oxlcx67" path="res://assets/Main Characters/Mask Dude/Idle (32x32).png" id="3_tex"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_icon"]
 atlas = ExtResource("3_tex")
@@ -20,4 +20,4 @@ speed_mult = 1.15
 jump_mult = 1.05
 max_hp_bonus = 1
 attack_cooldown_mult = 0.8
-unlocked_by_default = true
+ability = "Chance to crit 25%"

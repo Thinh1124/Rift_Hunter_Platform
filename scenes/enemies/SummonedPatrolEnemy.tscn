@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3]
+[ext_resource type="PackedScene" path="res://scenes/enemies/PatrolRockGrunt.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scenes/enemies/summoned_patrol.gd" id="2_script"]
+
+[node name="SummonedPatrolEnemy" instance=ExtResource("1_base")]
+collision_layer = 4
+script = ExtResource("2_script")
+knockback_lift = 0.0
+
+[node name="Hurtbox" parent="." index="3"]
+collision_layer = 4
+collision_mask = 8
+
+[node name="ContactHitbox" parent="." index="4"]
+collision_layer = 16
