@@ -11,6 +11,8 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/GameOver.tscn" id="12_over"]
 [ext_resource type="PackedScene" path="res://scenes/ui/LevelComplete.tscn" id="13_done"]
 
+[ext_resource type="PackedScene" path="res://scenes/levels/ScrollingBackground.tscn" id="30_scroll_background"]
+
 [node name="LevelBase" type="Node2D" unique_id=652814907]
 script = ExtResource("1_script")
 
@@ -64,3 +66,6 @@ position = Vector2(96, 320)
 
 [node name="ExitGate" parent="." unique_id=697335926 instance=ExtResource("10_7sgl3")]
 position = Vector2(315, 321)
+
+[node name="ScrollingBackground" parent="." instance=ExtResource("30_scroll_background")]
+unique_name_in_owner = true

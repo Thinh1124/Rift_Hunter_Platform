@@ -90,7 +90,6 @@ func open() -> void:
 
 
 func close() -> void:
-	AudioManager.play_sfx(&"ui_back")
 	visible = false
 	closed.emit()
 	if not overlay_mode:
@@ -118,7 +117,6 @@ func _index_of(data: CharacterData) -> int:
 func _step(delta: int) -> void:
 	if _list.is_empty():
 		return
-	AudioManager.play_sfx(&"ui_select")
 	# Vòng tròn: trước hết <-> sau cùng.
 	_index = posmod(_index + delta, _list.size())
 	_show_current()

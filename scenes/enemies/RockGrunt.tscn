@@ -10,13 +10,13 @@ knockback_lift = -100.0
 speed = 30.0
 detect_radius = 120.0
 attack_radius = 32.0
-sprite = NodePath("AnimatedSprite2D")
 
 [node name="AnimatedSprite2D" parent="." index="0"]
 position = Vector2(1, -2.000001)
 scale = Vector2(0.5, 0.5263158)
 sprite_frames = ExtResource("2_larpe")
-animation = &"spin"
+animation = &"Idle"
+frame_progress = 0.46719927
 
 [node name="VisibleOnScreenNotifier2D" parent="." index="7"]
-position = Vector2(1, -4)
+position = Vector2(1, -2)

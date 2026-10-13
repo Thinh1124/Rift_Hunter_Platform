@@ -40,6 +40,7 @@ var _score_shown: float = 0.0
 var _score_tween: Tween
 var _flash_tween: Tween
 var _boss_tween: Tween
+var _boss_gate_ready: bool = false
 
 
 func _ready() -> void:
@@ -151,7 +152,7 @@ func _format_score(value: int) -> String:
 
 ## Đủ shard -> chữ xanh + nhấp nháy thông báo cổng ra đã mở.
 func _on_gates_changed(remaining: int, total: int) -> void:
-	var done: bool = GameManager.shards_complete()
+	var done: bool = _boss_gate_ready if GameManager.is_boss_level(GameManager.current_level) else GameManager.shards_complete()
 	if done:
 		gates_label.text = gates_open_text
 		gates_label.add_theme_color_override(&"font_color", FLASH_COLOR)
@@ -200,6 +201,8 @@ func _on_boss_hp_changed(cur: int, maximum: int) -> void:
 
 ## Giữ thanh thêm boss_hide_delay giây rồi ẩn, để người chơi thấy boss đã gục.
 func _on_boss_defeated() -> void:
+	_boss_gate_ready = true
+	_on_gates_changed(GameManager.remaining_gates, GameManager.total_gates)
 	if _boss_tween != null and _boss_tween.is_valid():
 		_boss_tween.kill()
 	_boss_tween = create_tween()
@@ -235,7 +238,6 @@ func _on_pause_pressed() -> void:
 	if _pause_menu.visible:
 		_pause_menu.call(&"close")
 		return
-	AudioManager.play_sfx(&"ui_select")
 	_pause_menu.call(&"open")
 
 

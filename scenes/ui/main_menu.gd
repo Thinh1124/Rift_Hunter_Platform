@@ -10,14 +10,11 @@ extends Control
 @export var level_select_scene: String = "res://scenes/ui/LevelSelect.tscn"
 @export var settings_scene: String = "res://scenes/ui/Settings.tscn"
 @export var character_select_scene: String = "res://scenes/ui/CharacterSelect.tscn"
-## Tên game hiện trên logo. Giữ giống game_title của Boot.tscn để 2 màn khớp.
-@export var game_title: String = "SPACE BUNNY"
 ## Nhạc nền menu. Để trống nếu chưa có file -> không phát, không lỗi.
 @export var menu_music: AudioStream
 ## Vùng preview bên phải: Sprite nằm giữa SubViewport rồi scale.
 @export_range(1.0, 4.0, 0.25) var preview_scale: float = 2.0
 
-@onready var _title_label: Label = %Title
 @onready var _play_button: UIButton = %PlayButton
 @onready var _settings_button: UIButton = %SettingsButton
 @onready var _quit_button: UIButton = %QuitButton
@@ -34,7 +31,6 @@ var _level_overlay: Control
 
 
 func _ready() -> void:
-	_title_label.text = game_title
 	# Ẩn nút Thoát trên mobile (không có cách thoát app kiểu desktop).
 	_quit_button.visible = not OS.has_feature("mobile")
 
@@ -68,7 +64,6 @@ func _refresh_preview() -> void:
 ## chọn (và ải chưa vượt qua thì vẫn khoá).
 ## Ải hướng dẫn (Level0) được LevelSelect xử lý khi bấm vào ải ở lần đầu.
 func _on_play_pressed() -> void:
-	AudioManager.play_sfx(&"ui_select")
 	if _level_overlay == null:
 		_level_overlay = _spawn_overlay(level_select_scene, "LevelSelect")
 		if _level_overlay == null:
@@ -77,7 +72,6 @@ func _on_play_pressed() -> void:
 
 
 func _on_settings_pressed() -> void:
-	AudioManager.play_sfx(&"ui_select")
 	if _settings_overlay == null:
 		_settings_overlay = _spawn_settings_overlay()
 	if _settings_overlay == null:
@@ -92,7 +86,6 @@ func _spawn_settings_overlay() -> Control:
 
 
 func _on_character_pressed() -> void:
-	AudioManager.play_sfx(&"ui_select")
 	if _character_overlay == null:
 		_character_overlay = _spawn_overlay(character_select_scene, "CharacterSelect")
 		if _character_overlay == null:

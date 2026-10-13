@@ -145,7 +145,23 @@ func _run() -> void:
 	_check(not boss.summon_gate.visible, "Gate must close after summoning")
 	await _seconds(0.6)
 	_check(boss._minions[0].health.is_alive(), "Summoned patrol must not damage itself")
+	_check(boss._summoned_gate_count == 1, "The first portal must count toward the lifetime summon limit")
+	boss._on_summon_timeout()
+	_check(boss._summoned_gate_count == 2 and boss.summon_timer.is_stopped(), "The second portal must stop the summon timer")
+	boss._tick_gate(0.5)
+	_check(boss._minions.size() == 4, "Both portals must spawn two minions each")
+	boss._tick_gate(0.4)
+	boss._on_summon_timeout()
+	_check(not boss.summon_gate.visible and boss._summoned_gate_count == 2, "A third portal must never open")
+	for minion in boss._minions:
+		minion.queue_free()
+	await _seconds(0.1)
+	boss._prune_spawned_nodes()
+	boss._on_summon_timeout()
+	_check(boss._minions.is_empty() and boss._summoned_gate_count == 2 and not boss.summon_gate.visible,
+		"Losing all summoned minions must not reset the portal limit")
 	var score_before := GameManager.score
+	var shards_before: int = get_tree().get_nodes_in_group(&"pickup").size()
 	boss.health.invincible = false
 	boss.take_damage(99)
 	_check(boss.dead and boss.summon_timer.is_stopped(), "Death must stop attacks and summoning")
@@ -153,6 +169,8 @@ func _run() -> void:
 	_check(shakes.has(Vector2(6, 0.8)), "Death must request strong shake")
 	boss._on_died()
 	_check(GameManager.score == score_before + 2000 and defeated_events == 1, "Death handling must be idempotent")
+	await _seconds(0.1)
+	_check(get_tree().get_nodes_in_group(&"pickup").size() == shards_before + 5, "Boss death must drop exactly five shards once")
 	boss.state_machine.set_physics_process(true)
 	await _seconds(1.0)
 	_check(is_instance_valid(boss), "Boss death delay must be 1.5 seconds")

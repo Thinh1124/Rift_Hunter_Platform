@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scenes/levels/scrolling_level_background.gd" id="1_script"]
+[ext_resource type="Shader" path="res://scenes/levels/scrolling_level_background.gdshader" id="2_shader"]
+[ext_resource type="Texture2D" path="res://assets/Background/Blue.png" id="3_texture"]
+
+[sub_resource type="ShaderMaterial" id="BackgroundMaterial"]
+resource_local_to_scene = true
+shader = ExtResource("2_shader")
+shader_parameter/canvas_size = Vector2(640, 360)
+shader_parameter/scroll_offset = 0.0
+
+[node name="ScrollingBackground" type="CanvasLayer"]
+layer = -20
+script = ExtResource("1_script")
+background_texture = ExtResource("3_texture")
+
+[node name="Background" type="TextureRect" parent="."]
+unique_name_in_owner = true
+texture_filter = 1
+texture_repeat = 2
+material = SubResource("BackgroundMaterial")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_texture")
+expand_mode = 1

@@ -95,19 +95,16 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _on_resume_pressed() -> void:
-	AudioManager.play_sfx(&"ui_back")
 	close()
 
 
 func _on_restart_pressed() -> void:
-	AudioManager.play_sfx(&"ui_select")
 	# Bỏ pause TRƯỚC khi đổi cảnh, nếu không scene mới vào sẽ đứng im.
 	close()
 	GameManager.restart_level()
 
 
 func _on_settings_pressed() -> void:
-	AudioManager.play_sfx(&"ui_select")
 	_ensure_settings_overlay()
 	if _settings_overlay == null:
 		return
@@ -149,6 +146,5 @@ func _ensure_settings_overlay() -> void:
 
 
 func _on_quit_pressed() -> void:
-	AudioManager.play_sfx(&"ui_back")
 	close()
 	GameManager.go_to_menu()

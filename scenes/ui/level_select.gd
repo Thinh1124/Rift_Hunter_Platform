@@ -65,7 +65,6 @@ func _on_level_pressed(level: int) -> void:
 	if level > SaveManager.unlocked_level:
 		push_warning("LevelSelect: ảnh %d vẫn khoá." % level)
 		return
-	AudioManager.play_sfx(&"ui_select")
 	GameManager.reset_run()
 	# Lần đầu vào game -> chạy ải hướng dẫn (Level0) cho biết di chuyển, đánh
 	# quái, checkpoint và cách qua cổng. Xong ải đó SaveManager tự đánh dấu.
@@ -77,7 +76,6 @@ func _on_level_pressed(level: int) -> void:
 
 
 func _on_back_pressed() -> void:
-	AudioManager.play_sfx(&"ui_back")
 	if overlay_mode:
 		visible = false
 		closed.emit()

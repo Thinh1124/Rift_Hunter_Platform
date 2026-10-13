@@ -1,6 +1,12 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scenes/ui/boot.gd" id="1_boot"]
+[ext_resource type="Texture2D" path="res://assets/Splash art/Boot Splash Art.png" id="2_splash"]
+[ext_resource type="Script" path="res://scenes/ui/safe_area_margin.gd" id="3_safe"]
+[ext_resource type="SpriteFrames" path="res://assets/frames/ninja_frog_frames.tres" id="4_frog"]
+[ext_resource type="SpriteFrames" path="res://assets/frames/pink_man_frames.tres" id="5_pink"]
+[ext_resource type="SpriteFrames" path="res://assets/frames/virtual_guy_frames.tres" id="6_virtual"]
+[ext_resource type="SpriteFrames" path="res://assets/frames/mask_dude_frames.tres" id="7_mask"]
 
 [node name="Boot" type="Control"]
 anchors_preset = 15
@@ -11,41 +17,93 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_boot")
 
-[node name="Background" type="ColorRect" parent="."]
-layout_mode = 1
+[node name="Background" type="TextureRect" parent="."]
+unique_name_in_owner = true
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.07, 0.09, 0.14, 1)
+texture = ExtResource("2_splash")
+expand_mode = 1
+stretch_mode = 6
 
-[node name="Center" type="CenterContainer" parent="."]
-layout_mode = 1
+[node name="SafeArea" type="MarginContainer" parent="."]
+unique_name_in_owner = true
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+script = ExtResource("3_safe")
+extra_margin = 12
 
-[node name="Column" type="VBoxContainer" parent="Center"]
+[node name="Rows" type="VBoxContainer" parent="SafeArea"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 16
 
-[node name="Logo" type="Label" parent="Center/Column"]
-unique_name_in_owner = true
+[node name="Spacer" type="Control" parent="SafeArea/Rows"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "SPACE BUNNY"
-horizontal_alignment = 1
+size_flags_vertical = 3
+mouse_filter = 2
 
-[node name="LoadBar" type="ProgressBar" parent="Center/Column"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(160, 6)
+[node name="LoadingColumn" type="VBoxContainer" parent="SafeArea/Rows"]
 layout_mode = 2
-size_flags_horizontal = 4
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="RunnerTrack" type="Control" parent="SafeArea/Rows/LoadingColumn"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 36)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Runners" type="Node2D" parent="SafeArea/Rows/LoadingColumn/RunnerTrack"]
+unique_name_in_owner = true
+texture_filter = 1
+position = Vector2(0, 20)
+
+[node name="NinjaFrog" type="AnimatedSprite2D" parent="SafeArea/Rows/LoadingColumn/RunnerTrack/Runners"]
+unique_name_in_owner = true
+position = Vector2(16, 0)
+sprite_frames = ExtResource("4_frog")
+animation = &"run"
+autoplay = "run"
+
+[node name="PinkMan" type="AnimatedSprite2D" parent="SafeArea/Rows/LoadingColumn/RunnerTrack/Runners"]
+unique_name_in_owner = true
+position = Vector2(48, 0)
+sprite_frames = ExtResource("5_pink")
+animation = &"run"
+autoplay = "run"
+
+[node name="VirtualGuy" type="AnimatedSprite2D" parent="SafeArea/Rows/LoadingColumn/RunnerTrack/Runners"]
+unique_name_in_owner = true
+position = Vector2(80, 0)
+sprite_frames = ExtResource("6_virtual")
+animation = &"run"
+autoplay = "run"
+
+[node name="MaskDude" type="AnimatedSprite2D" parent="SafeArea/Rows/LoadingColumn/RunnerTrack/Runners"]
+unique_name_in_owner = true
+position = Vector2(112, 0)
+sprite_frames = ExtResource("7_mask")
+animation = &"run"
+autoplay = "run"
+
+[node name="LoadBar" type="ProgressBar" parent="SafeArea/Rows/LoadingColumn"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
 mouse_filter = 2
 show_percentage = false
+step = 0.0
+
+[node name="LoadingStatus" type="Label" parent="SafeArea/Rows/LoadingColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+text = "LOADING 0%"
+horizontal_alignment = 1

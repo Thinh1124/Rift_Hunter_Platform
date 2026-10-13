@@ -103,8 +103,6 @@ const BASE_BUFFER: float = 0.1
 @export var use_character_data: bool = true
 @export var character_override: CharacterData
 @export_range(0.1, 2.0, 0.05) var character_size_multiplier: float = 0.8
-@export_range(0.1, 1.0, 0.05) var footstep_interval: float = 0.3
-var _footstep_left: float = 0.0
 
 @export_group("Refs")
 @export var sprite: AnimatedSprite2D
@@ -300,7 +298,6 @@ func _apply_derived() -> void:
 # --- Vật lý ---------------------------------------------------------------
 
 func _physics_process(delta: float) -> void:
-	_update_footsteps(delta)
 	_poll_input()
 	_read_direction()
 	_apply_gravity(delta)
@@ -698,16 +695,6 @@ func _play_spawn_animation() -> void:
 
 func _on_spawn_animation_finished() -> void:
 	play_animation(&"idle")
-
-
-func _update_footsteps(delta: float) -> void:
-	if not control_enabled or not is_on_floor() or current_state() != STATE_RUN or absf(velocity.x) < 1.0:
-		_footstep_left = 0.0
-		return
-	_footstep_left -= delta
-	if _footstep_left <= 0.0:
-		_footstep_left = footstep_interval
-		AudioManager.play_sfx(&"footstep")
 
 
 func set_control_enabled(value: bool) -> void:

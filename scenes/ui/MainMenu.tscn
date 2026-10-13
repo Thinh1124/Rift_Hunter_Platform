@@ -3,8 +3,9 @@
 [ext_resource type="Script" path="res://scenes/ui/main_menu.gd" id="1_menu"]
 [ext_resource type="Script" path="res://scenes/ui/ui_button.gd" id="2_button"]
 [ext_resource type="Script" path="res://scenes/ui/safe_area_margin.gd" id="3_safe"]
-[ext_resource type="Script" path="res://scenes/ui/parallax_texture.gd" id="4_parallax"]
-[ext_resource type="Texture2D" path="res://assets/Background/Blue.png" id="5_bg"]
+[ext_resource type="Texture2D" path="res://assets/Splash art/Main Menu Splash Art.png" id="5_bg"]
+
+[ext_resource type="Texture2D" path="res://assets/Logo/Logo.png" id="6_logo"]
 
 [node name="MainMenu" type="Control"]
 anchors_preset = 15
@@ -16,15 +17,15 @@ script = ExtResource("1_menu")
 
 [node name="Background" type="TextureRect" parent="."]
 unique_name_in_owner = true
-modulate = Color(0.35, 0.45, 0.65, 1)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("5_bg")
-script = ExtResource("4_parallax")
-speed = 10.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
 
 [node name="Shade" type="ColorRect" parent="."]
 layout_mode = 1
@@ -34,7 +35,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.05, 0.07, 0.12, 0.62)
+color = Color(0.05, 0.07, 0.12, 0.25)
 
 [node name="SafeArea" type="MarginContainer" parent="."]
 unique_name_in_owner = true
@@ -59,19 +60,14 @@ mouse_filter = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="Title" type="Label" parent="SafeArea/Row/Left"]
+[node name="Logo" type="TextureRect" parent="SafeArea/Row/Left"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 120)
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "SPACE BUNNY"
-horizontal_alignment = 1
-
-[node name="Subtitle" type="Label" parent="SafeArea/Row/Left"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.66, 0.56, 0.4, 1)
-theme_override_font_sizes/font_size = 10
-text = "RIFT HUNTER"
-horizontal_alignment = 1
+mouse_filter = 2
+texture = ExtResource("6_logo")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Spacer" type="Control" parent="SafeArea/Row/Left"]
 custom_minimum_size = Vector2(0, 12)

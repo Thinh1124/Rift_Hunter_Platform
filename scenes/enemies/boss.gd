@@ -18,12 +18,15 @@ const SUMMONED_PATROL = preload("res://scenes/enemies/SummonedPatrolEnemy.tscn")
 @export var telegraph: float = 0.4
 @export var phase2_speed_mult: float = 1.3
 @export var summon_interval: float = 8.0
+@export_range(0, 10, 1) var max_summon_gates: int = 2
 @export var slam_jump_speed: float = 420.0
 @export var shot_speed: float = 180.0
 @export var damage_iframe: float = 0.45
 @export_group("Arena (world coordinates)")
 @export var arena_left: float = -320.0
 @export var arena_right: float = 320.0
+@export_group("Refs")
+@export var body_collision: CollisionShape2D
 
 @onready var shot_point: Marker2D = $ShotPoint
 @onready var summon_timer: Timer = $SummonTimer
@@ -40,6 +43,7 @@ var _phase_flash_left: float = 0.0
 var _gate_left: float = -1.0
 var _gate_anchor: Vector2
 var _spawned_this_gate: bool = false
+var _summoned_gate_count: int = 0
 var _projectiles: Array[EnemyProjectile] = []
 var _minions: Array[PatrolEnemy] = []
 var _rng := RandomNumberGenerator.new()
@@ -48,7 +52,8 @@ var _body_half_size := Vector2(64, 72)
 
 func _ready() -> void:
 	super._ready()
-	_body_half_size = ($CollisionShape2D.shape as RectangleShape2D).size * 0.5
+	body_collision = body_collision if body_collision != null else find_child(^"CollisionShape2D", false, false) as CollisionShape2D
+	_body_half_size = _world_body_bounds().size * 0.5
 	if arena_left > arena_right:
 		var saved_left := arena_left
 		arena_left = arena_right
@@ -75,7 +80,8 @@ func _on_boss_hp_changed(cur: int, maximum: int) -> void:
 		AudioManager.play_sfx(&"boss_phase")
 		_phase_flash_left = 0.3
 		EventBus.request_shake.emit(2.0, 0.2)
-		summon_timer.start(maxf(summon_interval, 0.1))
+		if _summoned_gate_count < max_summon_gates:
+			summon_timer.start(maxf(summon_interval, 0.1))
 
 
 func _on_damaged(_amount: int, _from_pos: Vector2) -> void:
@@ -269,8 +275,14 @@ func _spawn_projectile(at: Vector2, heading: Vector2, projectile_speed: float, w
 
 func _emit_slam_waves() -> void:
 	AudioManager.play_sfx(&"boss_slam")
+	var bounds: Rect2 = _world_body_bounds()
 	for side in [-1, 1]:
-		_spawn_projectile(global_position + Vector2(side * (_body_half_size.x + 8.0), _body_half_size.y - 8.0), Vector2(side, 0), slam_wave_speed, true)
+		var at := Vector2(bounds.get_center().x + side * (bounds.size.x * 0.5 + 8.0), bounds.end.y - 8.0)
+		_spawn_projectile(at, Vector2(side, 0), slam_wave_speed, true)
+
+
+func _world_body_bounds() -> Rect2:
+	return body_collision.global_transform * body_collision.shape.get_rect()
 
 
 func _fire_fan() -> void:
@@ -287,6 +299,12 @@ func _fire_fan() -> void:
 func _on_summon_timeout() -> void:
 	if dead or phase != 2 or _gate_left >= 0.0:
 		return
+	if _summoned_gate_count >= max_summon_gates:
+		summon_timer.stop()
+		return
+	_summoned_gate_count += 1
+	if _summoned_gate_count >= max_summon_gates:
+		summon_timer.stop()
 	_gate_left = telegraph + 0.35
 	_spawned_this_gate = false
 	summon_gate.global_position = _gate_anchor
@@ -346,6 +364,7 @@ func _on_died() -> void:
 			minion._disable_hitboxes()
 			minion.queue_free()
 	state_machine.change_state(STATE_DEAD)
+	_drop_shards()
 	GameManager.add_score(2000)
 	AudioManager.play_sfx(&"enemy_die")
 	EventBus.request_shake.emit(6.0, 0.8)

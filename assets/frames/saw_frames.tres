@@ -62,6 +62,6 @@ animations = [{
 "texture": SubResource("atlas_8")
 }],
 "loop": 1,
-"name": &"spin",
-"speed": 18.0
+"name": &"Idle",
+"speed": 7.0
 }]

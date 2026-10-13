@@ -1,74 +1,88 @@
 extends Control
-## Scene khởi động (main scene): logo fade-in -> giữ -> fade-out, rồi vào MainMenu.
-##
-## Timeline tổng 1.5s:
-##   0.0s  logo bắt đầu hiện (alpha 0)
-##   0.5s  logo hiện hết, giữ nguyên 0.5s (đọc save + nạp scene trong lúc này)
-##   1.5s  logo mờ hết -> SceneTransition.change_scene(MainMenu)
-##
-## SaveManager đã tự load_data() trong _ready của nó, nhưng Boot gọi lại để chắc
-## chắn (nếu save bị sửa ngoài lúc chạy) và đúng theo spec: load + preload scene
-## diễn ra TRONG lúc logo đang chạy.
+## Thread-load MainMenu while showing a synchronized four-character run.
 
-## Tên game hiện ở logo. Đổi text trong Inspector, không cần sửa scene.
-@export var game_title: String = "SPACE BUNNY"
-## Scene đích, nạp sẵn trong lúc chờ để vào game không bị giật.
 @export var main_menu_scene: String = "res://scenes/ui/MainMenu.tscn"
+@export_range(0.1, 10.0, 0.1) var minimum_loading_time: float = 1.5
+@export_range(0.5, 4.0, 0.1) var run_cycles_per_second: float = 2.0
+@export_range(16.0, 48.0, 1.0) var runner_size: float = 32.0
 
-@export_group("Timing")
-@export_range(0.0, 3.0, 0.05) var logo_fade_time: float = 0.5
-@export_range(0.0, 3.0, 0.05) var logo_hold_time: float = 0.5
-
-@onready var _logo: Label = %Logo
 @onready var _bar: ProgressBar = %LoadBar
+@onready var _track: Control = %RunnerTrack
+@onready var _group: Node2D = %Runners
+@onready var _status: Label = %LoadingStatus
+@onready var _runners: Array[AnimatedSprite2D] = [%NinjaFrog, %PinkMan, %VirtualGuy, %MaskDude]
 
 var _menu_scene: PackedScene
+var _elapsed: float = 0.0
+var _shown_progress: float = 0.0
 var _done: bool = false
+var _failed: bool = false
 
 
 func _ready() -> void:
-	_logo.text = game_title
-	# Bắt đầu ẩn hẳn rồi mới fade lên, tránh 1 frame nháy logo.
-	_logo.modulate.a = 0.0
 	_bar.value = 0.0
-	_run()
-
-
-func _run() -> void:
-	# 1) Logo vào -> giữ -> ra.
-	var total: float = logo_fade_time * 2.0 + logo_hold_time
-	var tween := create_tween()
-	tween.tween_property(_logo, "modulate:a", 1.0, logo_fade_time)
-	tween.tween_interval(logo_hold_time)
-	tween.tween_property(_logo, "modulate:a", 0.0, logo_fade_time)
-
-	# 2) Thanh giả tải chạy song song.
-	_bar.max_value = maxf(total, 0.001)
-	var bar_tween := create_tween()
-	bar_tween.tween_property(_bar, "value", total, total)
-
-	# 3) Trong lúc đó: đọc save + nạp sẵn scene menu.
 	SaveManager.load_data()
-	_menu_scene = _preload_menu()
-
-	# 4) Chờ hết timeline rồi mới chuyển.
-	await tween.finished
-	await bar_tween.finished
-	_go_to_menu()
-
-
-func _preload_menu() -> PackedScene:
+	for runner: AnimatedSprite2D in _runners:
+		runner.play(&"run")
+		runner.speed_scale = 0.0
+		var texture: Texture2D = runner.sprite_frames.get_frame_texture(&"run", 0)
+		runner.scale = Vector2.ONE * runner_size / maxf(float(texture.get_height()), 1.0)
+	_track.resized.connect(_update_layout)
+	_update_layout()
 	if not ResourceLoader.exists(main_menu_scene):
-		push_error("Boot: không thấy MainMenu tại '%s'." % main_menu_scene)
-		return null
-	var packed: Resource = load(main_menu_scene)
-	if packed is PackedScene:
-		return packed
-	push_error("Boot: '%s' không phải PackedScene." % main_menu_scene)
-	return null
+		_fail_loading()
+		return
+	var error: Error = ResourceLoader.load_threaded_request(main_menu_scene, "PackedScene")
+	if error != OK:
+		_fail_loading()
 
 
-## Menu có load xong không - MainMenu nên báo lỗi nếu scene hỏng.
+func _process(delta: float) -> void:
+	if _done or _failed:
+		return
+	_elapsed += delta
+	var progress: Array = []
+	var loading_status: int = ResourceLoader.THREAD_LOAD_LOADED if _menu_scene != null else ResourceLoader.load_threaded_get_status(main_menu_scene, progress)
+	var actual_progress: float = float(progress[0]) if not progress.is_empty() else 0.0
+	if loading_status == ResourceLoader.THREAD_LOAD_LOADED:
+		if _menu_scene == null:
+			_menu_scene = ResourceLoader.load_threaded_get(main_menu_scene) as PackedScene
+			if _menu_scene == null:
+				_fail_loading()
+				return
+		actual_progress = 1.0
+	elif loading_status == ResourceLoader.THREAD_LOAD_FAILED or loading_status == ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
+		_fail_loading()
+		return
+	var previous: float = _shown_progress
+	_shown_progress = maxf(previous, minf(actual_progress, clampf(_elapsed / minimum_loading_time, 0.0, 1.0)))
+	_bar.value = _shown_progress * _bar.max_value
+	_status.text = "LOADING %d%%" % roundi(_shown_progress * 100.0)
+	var pace: float = (_shown_progress - previous) / maxf(delta, 0.000001) * minimum_loading_time
+	for runner: AnimatedSprite2D in _runners:
+		var frames: SpriteFrames = runner.sprite_frames
+		var fps: float = maxf(frames.get_animation_speed(&"run"), 0.001)
+		runner.speed_scale = float(frames.get_frame_count(&"run")) * run_cycles_per_second / fps * pace
+	_update_layout()
+	if _shown_progress >= 1.0 and _menu_scene != null:
+		_go_to_menu()
+
+
+func _update_layout() -> void:
+	var group_width: float = runner_size * float(_runners.size())
+	_group.position = Vector2(maxf(_track.size.x - group_width, 0.0) * _shown_progress, _track.size.y - runner_size * 0.5)
+	for index in _runners.size():
+		_runners[index].position = Vector2(runner_size * (float(index) + 0.5), 0)
+
+
+func _fail_loading() -> void:
+	_failed = true
+	_status.text = "UNABLE TO LOAD MENU"
+	for runner: AnimatedSprite2D in _runners:
+		runner.speed_scale = 0.0
+	push_error("Boot: cannot load " + main_menu_scene)
+
+
 func menu_loaded() -> bool:
 	return _menu_scene != null
 
@@ -77,5 +91,4 @@ func _go_to_menu() -> void:
 	if _done:
 		return
 	_done = true
-	# SceneTransition tự fade 0.3s + đổi cảnh, không cần fade thêm ở đây.
 	SceneTransition.change_scene(main_menu_scene)

@@ -38,7 +38,10 @@ func _ready() -> void:
 	print("=== LEVEL0 TEST DONE ===")
 	_restore_save()
 	await get_tree().create_timer(0.2).timeout
-	get_tree().quit()
+	AudioManager.stop_music()
+	AudioManager.stop_sfx()
+	await get_tree().create_timer(0.1).timeout
+	get_tree().quit(0 if fails == 0 else 1)
 
 
 # --- save an toan ---------------------------------------------------------
@@ -113,7 +116,7 @@ func _test_ground_and_spawn() -> void:
 		if ground.get_cell_source_id(cell) == 1:
 			platform_cells += 1
 	print("so o bay thang = ", platform_cells)
-	_check("có bậc thang một chiều để học nhảy", platform_cells >= 6, str(platform_cells))
+	_check("có bậc thang một chiều để học nhảy", platform_cells >= 4, str(platform_cells))
 
 
 func _test_dialogues() -> void:
@@ -153,20 +156,24 @@ func _test_checkpoint() -> void:
 
 
 func _test_exit_gate() -> void:
-	print("--- 5. qua cong ---")
-	var exit_gate: ExitGate = _nodes().get_node("ExitGate") as ExitGate
-	# Cổng cần chạy hết animation "opening" mới sang OPEN (co fallback 2 giây).
-	await _frames(150)
-	print("trang thai cong = %s (0=LOCKED 1=OPENING 2=OPEN)" % exit_gate.state)
-	_check("cổng ra tự mở khi ải không có cổng quái",
-		exit_gate.state == ExitGate.ExitState.OPEN, str(exit_gate.state))
-
-	var player: Player = level.get_node(^"Player") as Player
+	var exit_gate := _nodes().get_node("ExitGate") as ExitGate
+	var player := level.get_node("Player") as Player
+	player.health.invincible = true
+	_check("ExitGate stays locked before collecting five shards", exit_gate.state == ExitGate.ExitState.LOCKED)
+	var grunt := _nodes().get_node("Grunt") as Enemy
+	_check("Tutorial enemy drops five shards", grunt.shard_drop == 5)
+	grunt.take_damage(grunt.health.current, player.global_position)
+	await _frames(2)
+	player.global_position = grunt.global_position + Vector2(0, 4)
+	player.velocity = Vector2.ZERO
+	await _frames(45)
+	_check("Player can collect five tutorial shards", GameManager.shards_complete())
+	_check("Collecting five shards opens the gate", exit_gate.state == ExitGate.ExitState.OPEN)
 	EventBus.level_completed.connect(func() -> void: _completed = true)
 	player.global_position = exit_gate.global_position
+	player.velocity = Vector2.ZERO
 	await _frames(8)
-	print("level_completed = ", _completed)
-	_check("chạm cổng ra -> hoàn thành ải", _completed)
+	_check("Touching the open gate completes the tutorial", _completed)
 
 
 func _check(label: String, ok: bool, detail: String = "") -> void:

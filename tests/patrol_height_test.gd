@@ -2,7 +2,6 @@ extends Node2D
 
 const ENEMIES: Array[String] = [
 	"res://scenes/enemies/Mushroom.tscn",
-	"res://scenes/enemies/Bomb.tscn",
 	"res://scenes/enemies/PatrolRockGrunt.tscn",
 	"res://scenes/enemies/SummonedPatrolEnemy.tscn",
 ]

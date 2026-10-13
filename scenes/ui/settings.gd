@@ -52,10 +52,8 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 
 	# value_changed chỉ đổi âm lượng (mượt khi kéo);
-	# drag_ended mới phát tiếng để nghe -> không kêu liên tục mỗi lần kéo.
 	_music_slider.value_changed.connect(_on_music_changed)
 	_sfx_slider.value_changed.connect(_on_sfx_changed)
-	_sfx_slider.drag_ended.connect(_on_sfx_drag_ended)
 	_vibration_check.toggled.connect(_on_vibration_toggled)
 	_touch_opacity_slider.value_changed.connect(_on_touch_opacity_changed)
 	_touch_scale_slider.value_changed.connect(_on_touch_scale_changed)
@@ -102,10 +100,6 @@ func _on_sfx_changed(value: float) -> void:
 
 
 ## Thả chuột mới phát 1 tiếng thử.
-func _on_sfx_drag_ended(_changed: bool) -> void:
-	AudioManager.play_sfx(&"ui_select")
-
-
 func _on_vibration_toggled(pressed: bool) -> void:
 	SaveManager.set_vibration(pressed)
 	# Bật rung -> thử rung luôn 1 lần để người chơi biết máy có rung không.
@@ -140,11 +134,9 @@ func _on_reset_pressed() -> void:
 		touch.set_opacity(SaveManager.touch_opacity)
 		touch.set_button_scale(SaveManager.touch_scale)
 	_sync_from_save()
-	AudioManager.play_sfx(&"ui_back")
 
 
 func _on_close_pressed() -> void:
-	AudioManager.play_sfx(&"ui_back")
 	# Lưu khi đóng: kéo xong tắt luôn game cũng không mất cài đặt.
 	SaveManager.save()
 	if overlay_mode:
